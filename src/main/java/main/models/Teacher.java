@@ -1,4 +1,4 @@
 package main.models;
 
-public class Subject {
+public class Teacher {
 }
