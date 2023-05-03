@@ -28,5 +28,5 @@ public class User {
     @NotNull(message = "Bạn cần mật khẩu để đăng nhập")
     @Size(min=6, message = "Mật khẩu của bạn cần phải có 6 ký tự")
     @Column(nullable = false)
-    private String passWord;
+    private String password;
 }
