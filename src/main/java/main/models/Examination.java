@@ -19,6 +19,8 @@ public class Examination {
     private String description = "Bài kiểm tra";
     @ManyToMany(targetEntity = Question.class)
     private List<Question> questions;
+    @ManyToOne(targetEntity = Course.class)
+    private Course course;
     @NotNull(message = "Hãy thêm ngày bắt đầu")
     @Column(nullable = false)
     private Date startDate;
