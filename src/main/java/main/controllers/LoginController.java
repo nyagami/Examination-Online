@@ -1,5 +1,7 @@
 package main.controllers;
 
+import main.data.UserRepository;
+import main.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,9 +19,7 @@ import main.models.Teacher;
 public class LoginController {
 
     @Autowired
-    private StudentRepository studentRepository;
-    @Autowired
-    private TeacherRepository teacherRepository;
+    private UserRepository userRepository;
 
     @GetMapping("/login")
     public String login(@RequestParam(value = "error",required = false) String error, Model model){
@@ -30,27 +30,23 @@ public class LoginController {
 	            model.addAttribute("error","Tài khoản không tồn tại");
 	        }
     	}
-        return "login";
+        return "_login";
     }
     @PostMapping("/login-process")
     public String processLogin(@RequestParam("email") String email,
                                @RequestParam("password") String password, HttpSession session,Model model){
-        Student student = studentRepository.findByEmail(email);
-        Teacher teacher = teacherRepository.findByEmail(email);
-        if(student!=null){
-            if(student.getPassword().equals(password)){
-                session.setAttribute("student", student);
-                return "redirect:/home?role=student";
-            }else{
-                session.setAttribute("email",email);
-                return "redirect:/login?error=password";
-            }
-        }else if(teacher!=null){
-            if(teacher.getPassword().equals(password)){
-                session.setAttribute("teacher", teacher);
-                return "redirect:/home?role=teacher";
-            }else{
-                session.setAttribute("email",email);
+        User user = userRepository.findByEmail(email);
+        if(user!=null){
+            if(user.getPassword().equals(password)){
+                if(user.getRole().equals("STUDENT")){
+                    session.setAttribute("user", user);
+                    return "redirect:/student/home";
+                }else{
+                    session.setAttribute("user", user);
+                    return "redirect:/teacher/home";
+                }
+            }else {
+                session.setAttribute("email", email);
                 return "redirect:/login?error=password";
             }
         }else{
