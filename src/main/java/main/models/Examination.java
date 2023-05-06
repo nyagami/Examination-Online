@@ -33,5 +33,5 @@ public class Examination {
     @Column(nullable = false)
     @NotNull(message = "Bài kiểm tra phải có điểm")
     private Float points;
-    private boolean isVisible = false;
+    private Boolean isVisible = false;
 }
