@@ -6,10 +6,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class HomeController {
-    @GetMapping("/")
-    public String home1(){
-        return "_home";
-    }
     @GetMapping("/home")
     public String home(@RequestParam(value = "role",required = false) String role){
         if(role.equals("student")){
@@ -18,7 +14,7 @@ public class HomeController {
         if(role.equals("teacher")){
             return "hometeacher";
         }
-        return "_home";
+        return "home";
     }
 
 }
