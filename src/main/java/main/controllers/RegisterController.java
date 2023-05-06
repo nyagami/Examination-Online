@@ -1,8 +1,10 @@
 package main.controllers;
 
+import jakarta.servlet.http.HttpSession;
 import main.data.UserRepository;
 import main.models.Student;
 import main.models.Teacher;
+import main.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,9 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import jakarta.servlet.http.HttpSession;
-import main.models.User;
 
 @Controller
 public class RegisterController {
@@ -39,7 +38,7 @@ public class RegisterController {
 			model.addAttribute("repassword", repassword);
 		}
 		model.addAttribute("user",user);
-		return "_register";
+		return "register";
 	}
 
 	@PostMapping("/process-register")
@@ -49,13 +48,13 @@ public class RegisterController {
 		if(!user.getPassword().equals(repassword)) {
 			session.setAttribute("user",user);
 			session.setAttribute("repassword", repassword);
-			return "redirect:/register?error=password";
+			return "redirect:register";
 		}else {
 			User user1 = userRepository.findByEmail(user.getEmail());
 			if(user1!=null) {
 				session.setAttribute("user",user);
 				session.setAttribute("repassword", repassword);
-				return "redirect:/register?error=email";
+				return "redirect:register";
 			}else {
 				if(user.getRole().equals("STUDENT")) {
 					Student student = new Student();

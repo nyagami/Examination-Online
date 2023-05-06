@@ -1,5 +1,6 @@
 package main.controllers;
 
+import jakarta.servlet.http.HttpSession;
 import main.data.UserRepository;
 import main.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,12 +9,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import jakarta.servlet.http.HttpSession;
-import main.data.StudentRepository;
-import main.data.TeacherRepository;
-import main.models.Student;
-import main.models.Teacher;
 
 @Controller
 public class LoginController {
@@ -30,7 +25,7 @@ public class LoginController {
 	            model.addAttribute("error","Tài khoản không tồn tại");
 	        }
     	}
-        return "_login";
+        return "login";
     }
     @PostMapping("/login-process")
     public String processLogin(@RequestParam("email") String email,
@@ -40,17 +35,17 @@ public class LoginController {
             if(user.getPassword().equals(password)){
                 if(user.getRole().equals("STUDENT")){
                     session.setAttribute("user", user);
-                    return "redirect:/student/home";
+                    return "redirect:home";
                 }else{
                     session.setAttribute("user", user);
-                    return "redirect:/teacher/home";
+                    return "redirect:home";
                 }
             }else {
                 session.setAttribute("email", email);
-                return "redirect:/login?error=password";
+                return "redirect:login";
             }
         }else{
-            return "redirect:/login?error=email";
+            return "redirect:login";
         }
     }
 }
