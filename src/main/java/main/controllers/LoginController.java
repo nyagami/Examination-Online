@@ -27,25 +27,25 @@ public class LoginController {
     	}
         return "login";
     }
-    @PostMapping("/login-process")
-    public String processLogin(@RequestParam("email") String email,
-                               @RequestParam("password") String password, HttpSession session,Model model){
-        User user = userRepository.findByEmail(email);
-        if(user!=null){
-            if(user.getPassword().equals(password)){
-                if(user.getRole().equals("STUDENT")){
-                    session.setAttribute("user", user);
-                    return "redirect:home";
-                }else{
-                    session.setAttribute("user", user);
-                    return "redirect:home";
-                }
-            }else {
-                session.setAttribute("email", email);
-                return "redirect:login";
-            }
-        }else{
-            return "redirect:login";
-        }
-    }
+//    @PostMapping("/login-process")
+//    public String processLogin(@RequestParam("email") String email,
+//                               @RequestParam("password") String password, HttpSession session,Model model){
+//        User user = userRepository.findByEmail(email);
+//        if(user!=null){
+//            if(user.getPassword().equals(password)){
+//                if(user.getRole().equals("STUDENT")){
+//                    session.setAttribute("user", user);
+//                    return "redirect:home";
+//                }else{
+//                    session.setAttribute("user", user);
+//                    return "redirect:home";
+//                }
+//            }else {
+//                session.setAttribute("email", email);
+//                return "redirect:login";
+//            }
+//        }else{
+//            return "redirect:login";
+//        }
+//    }
 }
