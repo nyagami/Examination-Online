@@ -17,6 +17,9 @@ public class Course {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotNull
+    private Long quantity;
     @NotNull(message = "Lớp học cần phải có tên")
     private String name;
     @NotNull(message = "Lớp học cần có mã mời")

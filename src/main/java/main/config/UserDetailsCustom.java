@@ -14,11 +14,11 @@ import lombok.Setter;
 public class UserDetailsCustom implements UserDetails{
 
 
-	private static final long serialVersionUID = 1L;
-	
-	private String name;
-	private String username;
-	private String password;
+    private static final long serialVersionUID = 1L;
+
+    private String name;
+    private String username;
+    private String password;
     private List<GrantedAuthority> authorities;
 
     private boolean isEnabled;
@@ -28,18 +28,18 @@ public class UserDetailsCustom implements UserDetails{
     private boolean accountNonLocked;
 
     private boolean credentialsNonExpired;
-    
+
     public UserDetailsCustom(String username, String password, List<GrantedAuthority> authorities,
-            boolean isEnabled, boolean accountNonExpired, boolean accountNonLocked,
-            boolean credentialsNonExpired){
-			this.username = username;
-			this.password = password;
-			this.authorities = authorities;
-			this.isEnabled = isEnabled;
-			this.accountNonExpired = accountNonExpired;
-			this.accountNonLocked = accountNonLocked;
-			this.credentialsNonExpired = credentialsNonExpired;
-	}
+                             boolean isEnabled, boolean accountNonExpired, boolean accountNonLocked,
+                             boolean credentialsNonExpired){
+        this.username = username;
+        this.password = password;
+        this.authorities = authorities;
+        this.isEnabled = isEnabled;
+        this.accountNonExpired = accountNonExpired;
+        this.accountNonLocked = accountNonLocked;
+        this.credentialsNonExpired = credentialsNonExpired;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
