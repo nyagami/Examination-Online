@@ -1,18 +1,16 @@
 package main.controllers;
 
-import java.security.Principal;
-import java.util.List;
-
+import main.data.CourseRepository;
+import main.data.UserRepository;
+import main.models.Course;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import main.data.CourseRepository;
-import main.data.UserRepository;
-import main.models.Course;
-import main.models.User;
+import java.security.Principal;
+import java.util.List;
 
 @Controller
 public class HomeController {
@@ -43,11 +41,6 @@ public class HomeController {
     }
     @GetMapping("/teacher/home")
     public String home2(Principal principal,Model model){
-    	User user = userRepository.findByUsername(principal.getName());
-    	List<Course> courses = courseRepository.findByTeacher(user.getTeacher());
-    	if(courses!=null) {
-    		model.addAttribute("courses",courses);
-    	}
         return "hometeacher";
     }
 }
