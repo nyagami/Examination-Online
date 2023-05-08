@@ -1,8 +1,7 @@
 package main.controllers;
 
-import java.util.ArrayList;
+import java.security.Principal;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -11,23 +10,22 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import main.data.CourseRepository;
+import main.data.UserRepository;
 import main.models.Course;
-import main.models.Student;
+import main.models.User;
 
 @Controller
 public class HomeController {
 
     @Autowired
     private CourseRepository courseRepository;
+    
+    @Autowired
+    private UserRepository userRepository;
 
     @GetMapping("/home")
     public String home(Model model){
         List<Course> courses = courseRepository.findAll(Sort.by("id"));
-        List<String> quantities = new ArrayList<>();
-//    	for(Course course: courses) {
-//    		String qtt = course.getStudents().size()+"/"+course.getQuantity();
-//            quantity
-//    	}
         if(courses!=null) {
             model.addAttribute("courses",courses);
         }
@@ -36,7 +34,7 @@ public class HomeController {
 
     @GetMapping("/403")
     public String page403() {
-        return "404";
+        return "403";
     }
 
     @GetMapping("/student/home")
@@ -44,7 +42,12 @@ public class HomeController {
         return "homestudent";
     }
     @GetMapping("/teacher/home")
-    public String home2(){
+    public String home2(Principal principal,Model model){
+    	User user = userRepository.findByUsername(principal.getName());
+    	List<Course> courses = courseRepository.findByTeacher(user.getTeacher());
+    	if(courses!=null) {
+    		model.addAttribute("courses",courses);
+    	}
         return "hometeacher";
     }
 }

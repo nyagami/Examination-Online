@@ -2,7 +2,6 @@ package main.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -12,7 +11,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import jakarta.servlet.http.HttpSession;
-import jakarta.validation.Valid;
 import main.data.StudentRepository;
 import main.data.TeacherRepository;
 import main.data.UserRepository;
@@ -39,7 +37,7 @@ public class RegisterController {
 		if(error!=null) {
 			if(error.equals("password"))
 				model.addAttribute("error", "Xác nhận mật khẩu của bạn không đúng");
-			else if(error.equals("email")) {
+			else if(error.equals("username")) {
 				model.addAttribute("error","Tài khoản của bạn đã tồn tại");
 			}
 		}
@@ -64,11 +62,11 @@ public class RegisterController {
 			session.setAttribute("repassword", repassword);
 			return "redirect:register?error=password";
 		}else {
-			User user1 = userRepository.findByEmail(user.getEmail());
+			User user1 = userRepository.findByUsername(user.getUsername());
 			if(user1!=null) {
 				session.setAttribute("user",user);
 				session.setAttribute("repassword", repassword);
-				return "redirect:register?error=email";
+				return "redirect:register?error=username";
 			}else {
 				if(user.getRole().equals("STUDENT")) {
 					Student student = new Student();

@@ -1,13 +1,19 @@
 package main.models;
 
-import jakarta.persistence.*;
+import java.util.List;
+
+import org.springframework.data.annotation.Id;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import org.springframework.data.annotation.Id;
-
-import java.util.List;
 
 @Data
 @Entity
@@ -20,6 +26,8 @@ public class Course {
 
     @NotNull
     private Long quantity;
+    @NotNull
+    private Long totalQuantity;
     @NotNull(message = "Lớp học cần phải có tên")
     private String name;
     @NotNull(message = "Lớp học cần có mã mời")

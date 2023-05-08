@@ -20,14 +20,15 @@ public class CustomUserDetailsService implements UserDetailsService {
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		User user = userRepository.findByEmail(username);
+		User user = userRepository.findByUsername(username);
 		if(user==null) {
 			throw new UsernameNotFoundException("KHONG TIM THAY TAI KHOAN");
 		}
 		List<GrantedAuthority> authorities = new ArrayList<>();
 		authorities.add(new SimpleGrantedAuthority(user.getRole()));
-		UserDetailsCustom userDetails = new UserDetailsCustom(user.getEmail(), user.getPassword(), authorities, true, true, true, true);
+		UserDetailsCustom userDetails = new UserDetailsCustom(user.getUsername(), user.getPassword(), authorities, true, true, true, true);
 		userDetails.setName(user.getName());
+		userDetails.setEmail(user.getEmail());
 		return userDetails;
 	}
 
