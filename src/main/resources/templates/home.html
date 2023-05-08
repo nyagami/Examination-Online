@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Home</title>
-    <link rel="stylesheet" href="./static/home.css">
+    <link rel="stylesheet" th:href="@{/css/home.css}">
 </head>
 <body>
     <div class="wrap">
@@ -13,20 +13,32 @@
         </div>
         <div class="common">
             <h1>Xin chào tất cả các bạn đã đến với hệ thống kiểm tra Online , chúc các bạn thi tốt</h1>
-            <div class="listClass">
-                <table>
-                    <thead>
-                        <th>ID</th>
-                        <th>Tên lớp</th>
-                        <th>Tên Giảng viên</th>
-                        <th>Số sinh viên</th>
-                    </thead>
-                    <tbody>
-                        <tr>
-
-                        </tr>
-                    </tbody>
-                </table>
+            <div class="wrapper">
+                <div class="listClass">
+										<table>
+	                    <thead>
+	                        <th>ID</th>
+	                        <th>Tên lớp</th>
+	                        <th>Tên Giảng viên</th>
+	                        <th>Số sinh viên</th>
+	                    </thead>
+	                    <tbody>
+			                <div th:each="course:${courses}">
+			                    <tr>
+			                        <td th:text="${course.id}"></td>
+			                        <td th:text="${course.name}"></td>
+			                        <td th:text="${course.teacher.user.name}"></td>	
+			                        <td><span th:text="${course.quantity}"></span>/<span th:text="${course.totalQuantity}"></span></td>                 
+			                    </tr>
+			                </div>
+	                    </tbody>
+	                </table>
+                </div>
+                <div class="transfer">        
+                    <button class="btn-dangky"><a th:href="@{/login}">Đăng Nhập</a></button>           
+                    <h2>Nếu bạn chưa có tài khoản đăng ký tại đây</h2>
+                    <button class="btn-dangky"><a th:href="@{/register}">Đăng ký</a></button>
+                </div>
             </div>
         </div>
     </div>
