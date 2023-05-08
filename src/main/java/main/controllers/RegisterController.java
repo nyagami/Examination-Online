@@ -37,7 +37,7 @@ public class RegisterController {
 		if(error!=null) {
 			if(error.equals("password"))
 				model.addAttribute("error", "Xác nhận mật khẩu của bạn không đúng");
-			else if(error.equals("email")) {
+			else if(error.equals("username")) {
 				model.addAttribute("error","Tài khoản của bạn đã tồn tại");
 			}
 		}
@@ -62,11 +62,11 @@ public class RegisterController {
 			session.setAttribute("repassword", repassword);
 			return "redirect:register?error=password";
 		}else {
-			User user1 = userRepository.findByEmail(user.getEmail());
+			User user1 = userRepository.findByUsername(user.getUsername());
 			if(user1!=null) {
 				session.setAttribute("user",user);
 				session.setAttribute("repassword", repassword);
-				return "redirect:register?error=email";
+				return "redirect:register?error=username";
 			}else {
 				if(user.getRole().equals("STUDENT")) {
 					Student student = new Student();

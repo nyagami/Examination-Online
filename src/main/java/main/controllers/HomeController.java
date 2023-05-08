@@ -43,7 +43,7 @@ public class HomeController {
     }
     @GetMapping("/teacher/home")
     public String home2(Principal principal,Model model){
-    	User user = userRepository.findByEmail(principal.getName());
+    	User user = userRepository.findByUsername(principal.getName());
     	List<Course> courses = courseRepository.findByTeacher(user.getTeacher());
     	if(courses!=null) {
     		model.addAttribute("courses",courses);

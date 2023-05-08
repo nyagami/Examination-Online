@@ -47,6 +47,7 @@ public class SecurityConfig{
 				.authorizeHttpRequests()
 				.requestMatchers("/login").permitAll()
 				.requestMatchers("/*").permitAll()
+				.requestMatchers("/process-register*").permitAll()
 				.requestMatchers("/student/**").hasAuthority("STUDENT")
 				.requestMatchers("/teacher/**").hasAuthority("TEACHER")
 				.anyRequest().authenticated()

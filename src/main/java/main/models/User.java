@@ -21,8 +21,9 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotNull(message = "Bạn cần phải điền email")
-    @Column(nullable = false)
+    @NotNull(message = "Bạn phải có tài khoản")
+    @Column(nullable = false, name = "username")
+    private String username;
     private String email;
     @NotNull(message = "Bạn phải đặt tên")
     @Column(nullable = false)
@@ -40,7 +41,6 @@ public class User {
     @OneToOne
     @JoinColumn(name = "teacher_id")
     private Teacher teacher;
-
     @OneToOne
     @JoinColumn(name = "student_id")
     private Student student;

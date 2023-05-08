@@ -21,15 +21,15 @@
             <label id="tk">Họ và tên</label>
             <input type="text" th:field="*{name}" required/>
 
-            <label id="email">Email</label>
-            <input type="email" th:field="*{email}" required/>
+            <label id="username">Tài khoản</label>
+            <input type="text" th:field="*{username}" required/>
 
             <span class="validationError" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Mật khẩu</span>
 
-            <label id="">Nhập mật khẩu</label>
+            <label id="password">Nhập mật khẩu</label>
             <input type="password" th:field="*{password}" required/>
 
-            <label id="">Nhập lại mật khẩu</label>
+            <label id="repassword">Nhập lại mật khẩu</label>
             <input type="password" name="repassword" required/>
 
             <p>Bạn đang là : </p>
@@ -37,7 +37,6 @@
                 <input type="radio" th:field="*{role}" value="TEACHER" required/> Giảng viên
                 <input type="radio" th:field="*{role}" value="STUDENT" required/> Sinh viên
             </div>
-
 
             <input type="submit" value="Đăng ký" class="inputSubmit">
 
