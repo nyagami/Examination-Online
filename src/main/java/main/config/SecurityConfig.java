@@ -1,9 +1,8 @@
 package main.config;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Set;
-
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,9 +19,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Set;
 
 @EnableWebSecurity
 @Configuration
@@ -51,6 +49,7 @@ public class SecurityConfig{
 				.requestMatchers("/*").permitAll()
 				.requestMatchers("/student/**").hasAuthority("STUDENT")
 				.requestMatchers("/teacher/**").hasAuthority("TEACHER")
+				.anyRequest().authenticated()
 				.and()
 				.formLogin()
 				.loginPage("/login")
