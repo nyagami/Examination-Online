@@ -23,7 +23,8 @@ public class ExaminationController {
     }
 
     @GetMapping("/{id}")
-    public String Examination(@PathVariable("id") Long id, Model model){
+    public String examination(@PathVariable("id") Long id, Model model){
+        System.out.println(id);
         Examination examination = examinationRepo.getReferenceById(id);
         Iterable<Result> results = resultRepo.findByExamination(examination);
         model.addAttribute("examination", examination);
