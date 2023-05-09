@@ -25,7 +25,6 @@ public class Result {
     @NotNull
     private Examination examination;
     private Date startTime;
-    private Boolean done;
     private Integer numberOfCorrectAnswers = 0;
     @PrePersist
     void startTime(){

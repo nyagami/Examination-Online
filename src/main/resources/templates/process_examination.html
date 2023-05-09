@@ -2,9 +2,33 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <script th:src="@{/js/jquery.min.js}"></script>
+    <title th:text="${exam.title}"></title>
 </head>
 <body>
+    <header class="text-center">
+        <h1 th:text="${'Bài kiểm tra: ' + exam.title}"></h1>
+        <h4 th:text="${'Thời gian diễn ra: ' + startDate + ' đến ' + endDate}"></h4>
+        <h5 th:text="${'Thời gian làm bài: ' + exam.totalTime / 60 + ' phút'}"></h5>
+        <p th:text="${exam.description}"></p>
+    </header>
+
+    <div th:switch="${done}">
+        <div th:case="true">
+            Bài kiểm tra dđã kết thúc, bạn có thể xem kết quả ở đây
+            <a th:href="@{'/examination/' + ${exam.id}} + '/results'">
+                <button type="button" class="btn btn-primary">Kết quả</button>
+            </a>
+        </div>
+        <div th:case="false">
+            <ul th:each="question: ${questions}" class="list-group">
+                <li class="list-group-item question mt-5 pb-5">
+                    <div th:text="${question.description}"></div>
+                </li>
+            </ul>
+        </div>
+    </div>
 
 </body>
 </html>

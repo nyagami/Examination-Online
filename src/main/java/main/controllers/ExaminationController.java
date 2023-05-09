@@ -52,7 +52,7 @@ public class ExaminationController {
             Result result = resultRepository.findByExaminationAndStudent(examination, student);
             if(result != null){
                 Date now = new Date();
-                Long remain = examination.getTotalTime() - (now.getTime() - result.getStartTime().getTime());
+                Long remain = examination.getTotalTime() - (now.getTime() - result.getStartTime().getTime())/1000;
                 model.addAttribute("remain", remain);
             }else{
                 model.addAttribute("remain", examination.getTotalTime());
@@ -77,11 +77,29 @@ public class ExaminationController {
         if(!examination.getCourse().getStudentList().contains(student))
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
 
-/*        Result result = resultRepository.findByExaminationAndStudent(examination, student);
+        Result result = resultRepository.findByExaminationAndStudent(examination, student);
         if(result == null){
+            result = new Result();
             result.setExamination(examination);
             result.setStudent(student);
-        }*/
+            result.setStartTime(new Date());
+            result.setNumberOfCorrectAnswers(0);
+            resultRepository.save(result);
+        }
+        Date now = new Date();
+        long remain = examination.getTotalTime() - (now.getTime() - result.getStartTime().getTime())/1000;
+        if(remain < 0){
+            model.addAttribute("done", true);
+        }else{
+            model.addAttribute("done", false);
+            Iterable<Question> questions = questionRepository.findByExamination(examination);
+            model.addAttribute("questions", questions);
+            model.addAttribute("remain", remain);
+        }
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        model.addAttribute("startDate", simpleDateFormat.format(examination.getStartDate()));
+        model.addAttribute("endDate", simpleDateFormat.format(examination.getEndDate()));
+        model.addAttribute("exam", examination);
         return "process_examination";
     }
 }

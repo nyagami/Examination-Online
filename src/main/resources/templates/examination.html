@@ -118,7 +118,7 @@
                 </script>
         </div>
         <div th:case="'STUDENT'">
-            <div th:switch="${remain < exam.totalTime}">
+            <div th:switch="${remain == exam.totalTime}">
                 <div th:case="true">
                     <a th:href="@{'/examination/' + ${exam.id}} + '/process'">
                         <button type="button" class="btn btn-primary">Bắt đầu</button>
