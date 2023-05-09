@@ -1,5 +1,6 @@
 package main.controllers;
 
+import lombok.Data;
 import main.data.*;
 import main.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,16 +8,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 @Controller
-@RequestMapping("/examination")
+@RequestMapping(value = "/examination")
 public class ExaminationController {
     private final ExaminationRepository examinationRepository;
     private final QuestionRepository questionRepository;
@@ -91,9 +91,15 @@ public class ExaminationController {
         if(remain < 0){
             model.addAttribute("done", true);
         }else{
-            model.addAttribute("done", false);
+            model.addAttribute("done", result.getDone());
             Iterable<Question> questions = questionRepository.findByExamination(examination);
             model.addAttribute("questions", questions);
+            for(Question q: questions){
+                q.setCorrectAnswer(0);
+            }
+            QuestionWrapper questionWrapper = new QuestionWrapper();
+            questionWrapper.setQuestions((List<Question>) questions);
+            model.addAttribute("questionWrapper", questionWrapper);
             model.addAttribute("remain", remain);
         }
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
@@ -101,5 +107,31 @@ public class ExaminationController {
         model.addAttribute("endDate", simpleDateFormat.format(examination.getEndDate()));
         model.addAttribute("exam", examination);
         return "process_examination";
+    }
+
+    @Data
+    public static class QuestionWrapper{
+        private List<Question> questions;
+    }
+
+    @PostMapping(value = "/{id}/process")
+    public String processSubmit(@PathVariable("id") Long id, @ModelAttribute QuestionWrapper questionWrapper, Authentication authentication){
+        User user = userRepository.findByUsername(authentication.getName());
+        Student student = studentRepository.findByUser(user);
+        Examination examination = examinationRepository.findById(id).orElseThrow();
+        Result result = resultRepository.findByExaminationAndStudent(examination, student);
+        if(result == null) throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        result.setDone(true);
+        List<Question> questions = (List<Question>) questionRepository.findByExamination(examination);
+        List<Question> studentQuestions = questionWrapper.getQuestions();
+        int numberOfCorrectAnswers = 0;
+        for(int i = 0; i < questions.size(); i ++ ){
+            if(questions.get(i).getCorrectAnswer().equals(studentQuestions.get(i).getCorrectAnswer())){
+                numberOfCorrectAnswers += 1;
+            }
+        }
+        result.setNumberOfCorrectAnswers(numberOfCorrectAnswers);
+        resultRepository.save(result);
+        return "redirect:/examination/"+id+"/process";
     }
 }
