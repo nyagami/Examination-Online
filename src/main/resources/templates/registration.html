@@ -18,8 +18,8 @@
         <form th:action="@{/process-register}" method="POST" th:object="${user}" class="formContainer">
             <h3 class="heading">Đăng Ký</h3>
             <div th:if="${error}"><span th:text="${error}" style="color: red;"></span></div>
-            <label id="tk">Họ và tên</label>
-            <input type="text" th:field="*{name}" required/>
+            <label id="name">Họ và tên</label>
+            <input type="text" name="name" required/>
 
             <label id="username">Tài khoản</label>
             <input type="text" th:field="*{username}" required/>
@@ -29,8 +29,8 @@
             <label id="password">Nhập mật khẩu</label>
             <input type="password" th:field="*{password}" required/>
 
-            <label id="repassword">Nhập lại mật khẩu</label>
-            <input type="password" name="repassword" required/>
+            <label id="password_2">Nhập lại mật khẩu</label>
+            <input type="password" name="password_2" required/>
 
             <p>Bạn đang là : </p>
             <div class="optionGroup">

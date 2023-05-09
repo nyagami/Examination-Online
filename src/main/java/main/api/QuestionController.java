@@ -7,8 +7,6 @@ import main.models.Question;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping(path = "/api/question", produces = "application/json")
 @CrossOrigin("*")
@@ -24,9 +22,6 @@ public class QuestionController {
     @PostMapping("/add/{examinationId}")
     public Question addQuestion(@PathVariable("examinationId") Long examinationId, @RequestBody Question question){
         Examination examination = examinationRepo.findById(examinationId).orElseThrow();
-        List<Question> questions = examination.getQuestions();
-        questions.add(question);
-        examination.setQuestions(questions);
         examinationRepo.save(examination);
         return questionRepo.save(question);
     }
@@ -34,9 +29,6 @@ public class QuestionController {
     @DeleteMapping("/delete/{examinationId}")
     public void deleteQuestion(@PathVariable("examinationId") Long examinationId, @RequestBody Question question){
         Examination examination = examinationRepo.findById(examinationId).orElseThrow();
-        List<Question> questions = examination.getQuestions();
-        questions.removeIf(q -> q.getId().equals(question.getId()));
-        examination.setQuestions(questions);
         examinationRepo.save(examination);
     }
 
