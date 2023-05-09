@@ -1,17 +1,12 @@
 package main.models;
 
-import java.util.List;
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.Date;
 
 @Data
 @Entity
@@ -20,12 +15,18 @@ public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @ManyToMany()
-    @JoinTable(name = "student_course",
-            joinColumns = @JoinColumn(name = "student_id"),
-            inverseJoinColumns = @JoinColumn(name = "course_id"))
-    private List<Course> courses;
-    @OneToOne(mappedBy = "student")
-    private User user;
+    @NotNull(message = "Bạn phải có tài khoản")
+    @Column(nullable = false, name = "username", unique = true)
+    private String username;
+    private String email;
+    @NotNull(message = "Bạn phải đặt tên")
+    @Column(nullable = false)
+    private String name;
+    @NotNull(message = "Bạn cần mật khẩu để đăng nhập")
+    @Size(min=6, message = "Mật khẩu của bạn cần phải có 6 ký tự")
+    @Column(nullable = false)
+    private String password;
+    private Date dateOfBirth;
+    private String address;
+    private String phoneNumber;
 }

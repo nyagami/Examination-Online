@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
-import java.util.List;
 
 @Entity
 @Data
@@ -17,9 +16,8 @@ public class Examination {
     private Long id;
     private String title = "Chưa đặt tên";
     private String description = "Bài kiểm tra";
-    @ManyToMany(targetEntity = Question.class)
-    private List<Question> questions;
-    @ManyToOne(targetEntity = Course.class)
+    @ManyToOne(targetEntity = Course.class, cascade = CascadeType.REMOVE)
+    @NotNull(message = "Bài kiểm tra phải có lớp")
     private Course course;
     @NotNull(message = "Hãy thêm ngày bắt đầu")
     @Column(nullable = false)
@@ -27,7 +25,6 @@ public class Examination {
     @NotNull(message = "Hãy thêm ngày kết thúc")
     @Column(nullable = false)
     private Date endDate;
-
     @NotNull
     private Long totalTime = (long) 60; // in seconds
     @Column(nullable = false)
