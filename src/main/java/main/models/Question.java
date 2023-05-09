@@ -24,9 +24,9 @@ public class Question {
     @NotNull(message = "Cần phải có đề bài")
     private String description;
     @Column(length = 500)
-    @NotNull
+    @NotNull(message = "Cần phải có câu trả lời")
     private String answer;  // split by &&&
-    @Max(value = 3, message = "Không có đáp án nào như vậy")
+    @Max(value = 4, message = "Không có đáp án nào như vậy")
     @NotNull(message = "Câu hỏi cần có câu trả lời đúng")
     private Integer correctAnswer;
 }

@@ -32,8 +32,7 @@ public class ExaminationApi {
 
     @GetMapping("/course/{courseId}")
     Iterable<Examination> findByCourse(@PathVariable("courseId") Long courseId, Authentication authentication){
-        Course course = courseRepository.findAllById(courseId);
-        if(course == null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        Course course = courseRepository.findById(courseId).orElseThrow();
         User user = userRepository.findByUsername(authentication.getName());
         if(user.getRole().equals("TEACHER")){
             if(course.getTeacher().getUser().equals(user)){
