@@ -2,7 +2,6 @@ package main.api;
 
 import main.data.ExaminationRepository;
 import main.data.QuestionRepository;
-import main.models.Examination;
 import main.models.Question;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,16 +24,19 @@ public class QuestionApi {
 
     @PostMapping("/add")
     public Question add(@RequestBody Question question, Authentication authentication){
+        if(question.getDescription().isBlank()) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cần có đề bài");
         if(authentication.getName().equals(question.getExamination().getCourse().getTeacher().getUser().getUsername())){
             return questionRepository.save(question);
         }
         throw new ResponseStatusException(HttpStatus.FORBIDDEN);
     }
 
-    @DeleteMapping("/delete/{examinationId}")
-    public void deleteQuestion(@PathVariable("examinationId") Long examinationId, @RequestBody Question question){
-        Examination examination = examinationRepository.findById(examinationId).orElseThrow();
-        examinationRepository.save(examination);
+    @DeleteMapping("/delete/{id}")
+    public void deleteQuestion(@PathVariable("id") Long id, Authentication authentication){
+        Question question = questionRepository.findById(id).orElseThrow();
+        if(authentication.getName().equals(question.getExamination().getCourse().getTeacher().getUser().getUsername())){
+            questionRepository.delete(question);
+        }
     }
 
     @PutMapping("/update")
