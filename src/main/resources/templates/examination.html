@@ -3,9 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
-    <title th:text="${examination.title}">Bài kiểm tra:</title>
+    <script th:src="@{/js/jquery.min.js}"></script>
+    <title th:text="${exam.title}">Bài kiểm tra:</title>
 </head>
 <body>
+    <header class="text-center">
+        <h1 th:text="${'Bài kiểm tra: ' + exam.title}"></h1>
+        <h4 th:text="${'Thời gian diễn ra: ' + startDate + ' đến ' + endDate}"></h4>
+        <h5 th:text="${'Thời gian làm bài: ' + exam.totalTime / 60 + ' phút'}"></h5>
+        <p th:text="${exam.description}"></p>
+    </header>
 
+    <!-- content -->
+
+    <div class="container text-center">
+        <div th:switch="${role}">
+            <div th:case="'TEACHER'">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-target="#questionModal"
+                        onclick="$('#questionModal').show()">
+                    Thêm câu hỏi
+                </button>
+                <!-- Modal -->
+                <div class="modal" id="questionModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="questionModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="questionModalLabel">Thêm câu hỏi</h1>
+                            </div>
+                            <div class="modal-body">
+                                I will not close if you click outside me. Don't even try to press escape key.
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                                        onclick="$('#questionModal').hide()">Huỷ</button>
+                                <button type="button" class="btn btn-primary">Thêm</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <ul th:each="question: ${questions}">
+                    <li th:text="${question.description}"></li>
+                </ul>
+            </div>
+            <div th:case="'STUDENT'">
+                <h1>student</h1>
+            </div>
+        </div>
+    </div>
+    <form class="">
+
+    </form>
 </body>
 </html>
