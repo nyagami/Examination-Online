@@ -1,8 +1,7 @@
 package main.config;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import main.data.UserRepository;
+import main.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -10,8 +9,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import main.data.UserRepository;
-import main.models.User;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CustomUserDetailsService implements UserDetailsService {
 
@@ -26,10 +25,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 		}
 		List<GrantedAuthority> authorities = new ArrayList<>();
 		authorities.add(new SimpleGrantedAuthority(user.getRole()));
-		UserDetailsCustom userDetails = new UserDetailsCustom(user.getUsername(), user.getPassword(), authorities, true, true, true, true);
-		userDetails.setName(user.getName());
-		userDetails.setEmail(user.getEmail());
-		return userDetails;
+		return new UserDetailsCustom(user.getUsername(), user.getPassword(), authorities, true, true, true, true);
 	}
 
 

@@ -1,7 +1,6 @@
 package main.controllers;
 
 import main.data.CourseRepository;
-import main.data.UserRepository;
 import main.models.Course;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -17,9 +16,6 @@ public class HomeController {
 
     @Autowired
     private CourseRepository courseRepository;
-    
-    @Autowired
-    private UserRepository userRepository;
 
     @GetMapping("/home")
     public String home(Model model){
