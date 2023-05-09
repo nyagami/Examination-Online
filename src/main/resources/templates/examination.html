@@ -31,19 +31,87 @@
                                 <h1 class="modal-title fs-5" id="questionModalLabel">Thêm câu hỏi</h1>
                             </div>
                             <div class="modal-body">
-                                I will not close if you click outside me. Don't even try to press escape key.
+                                <div>
+                                    <h4>Câu hỏi</h4>
+                                    <textarea id="q-des" class="form-control" placeholder="Câu hỏi" required></textarea>
+                                </div>
+                                <div class="mt-2">
+                                    <h5>Các đáp án </h5>
+                                    <ul class="text-left">
+                                        <li>
+                                            Đáp án 1: <input class="form-control q-ans">
+                                        </li>
+                                        <li>
+                                            Đáp án 2: <input class="form-control q-ans">
+                                        </li>
+                                        <li>
+                                            Đáp án 3: <input class="form-control q-ans">
+                                        </li>
+                                        <li>
+                                            Đáp án 4: <input class="form-control q-ans">
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="mt-1">
+                                    <h5>Đáp án đúng</h5>
+                                    <select id="q-correct">
+                                        <option>1</option>
+                                        <option>2</option>
+                                        <option>3</option>
+                                        <option>4</option>
+                                    </select>
+                                </div>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
                                         onclick="$('#questionModal').hide()">Huỷ</button>
-                                <button type="button" class="btn btn-primary">Thêm</button>
+                                <button type="button" class="btn btn-primary" onclick="postQuestion()">Thêm</button>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                <!-- Question list -->
                 <ul th:each="question: ${questions}">
-                    <li th:text="${question.description}"></li>
+                    <li>
+                        <h5 th:text="${question.description}"></h5>
+                        <ul>
+                            <li>
+                                <div class="input-group-text">
+                                    <input type="checkbox">
+                                    <span th:text="${question.answer}"></span>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
                 </ul>
+                <script th:inline="javascript">
+                    /*<![CDATA[*/
+                    var examination = [[${exam}]];
+                    /*]]>*/
+                </script>
+                <script type="text/javascript">
+                    function postQuestion(){
+                        description = $('#q-des').val();
+                        answers = $('.form-control.q-ans');
+                        answer = [...answers.map((idx, answer) => answer.value)].join('#~~~#');
+                        correctAnswer = $('#q-correct').val();
+                        question = {
+                            description,
+                            answer,
+                            correctAnswer,
+                            examination,
+                        }
+                        fetch("/api/question/add", {
+                            method: 'POST',
+                            headers: {
+                              'Accept': 'application/json',
+                              'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(question),
+                        }).then(res => console.log(res.ok));
+                    }
+                </script>
             </div>
             <div th:case="'STUDENT'">
                 <h1>student</h1>
