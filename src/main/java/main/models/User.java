@@ -14,7 +14,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NotNull(message = "Bạn phải có tài khoản")
-    @Column(nullable = false, name = "username")
+    @Column(nullable = false, unique = true)
     private String username;
     @NotNull(message = "Bạn cần mật khẩu để đăng nhập")
     @Size(min=6, message = "Mật khẩu của bạn cần phải có 6 ký tự")

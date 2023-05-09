@@ -1,10 +1,7 @@
 package main.api;
 
 import main.data.*;
-import main.models.Course;
-import main.models.Examination;
-import main.models.Student;
-import main.models.User;
+import main.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -33,17 +30,17 @@ public class ExaminationApi {
         this.userRepository = userRepository;
     }
 
-    @GetMapping("/{courseId}")
-    Iterable<Examination> findAll(@PathVariable("courseId") Long courseId, Authentication authentication){
+    @GetMapping("/course/{courseId}")
+    Iterable<Examination> findByCourse(@PathVariable("courseId") Long courseId, Authentication authentication){
         Course course = courseRepository.findAllById(courseId);
-        if(course == null) throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-        List<Student> studentList = course.getStudentList();
+        if(course == null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         User user = userRepository.findByUsername(authentication.getName());
         if(user.getRole().equals("TEACHER")){
             if(course.getTeacher().getUser().equals(user)){
                 return examinationRepository.findByCourse(course);
             }
         }else if(user.getRole().equals("STUDENT")){
+            List<Student> studentList = course.getStudentList();
             Student student = studentRepository.findByUser(user);
             for(Student std: studentList){
                 if(std.equals(student)){
@@ -51,7 +48,26 @@ public class ExaminationApi {
                 }
             }
         }
-
         throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+    }
+
+    @PostMapping("/add")
+    public Examination create(@RequestBody Examination examination, Authentication authentication){
+        Course course = examination.getCourse();
+        if(course == null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        Teacher teacher = course.getTeacher();
+        if(teacher == null) throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        return examinationRepository.save(examination);
+    }
+
+
+    @DeleteMapping("delete/{id}")
+    public void delete (@PathVariable("id") Long id, Authentication authentication){
+        User user = userRepository.findByUsername(authentication.getName());
+        Teacher teacher = teacherRepository.findByUser(user);
+        if(teacher == null) throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        Examination examination = examinationRepository.findById(id).orElseThrow();
+        examinationRepository.delete(examination);
+        return;
     }
 }
