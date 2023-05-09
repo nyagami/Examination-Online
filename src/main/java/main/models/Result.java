@@ -1,6 +1,7 @@
 package main.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,12 +12,11 @@ public class Result {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @ManyToOne(targetEntity = Student.class)
+    @ManyToOne(targetEntity = Student.class, cascade = CascadeType.REMOVE)
+    @NotNull
     private Student student;
-
-    @ManyToOne(targetEntity = Examination.class)
+    @ManyToOne(targetEntity = Examination.class, cascade = CascadeType.REMOVE)
+    @NotNull
     private Examination examination;
-
-    private Integer numberOfCorrectAnwsers = 0;
+    private Integer numberOfCorrectAnswers = 0;
 }
