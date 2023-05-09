@@ -10,4 +10,5 @@ import org.springframework.stereotype.Repository;
 public interface ResultRepository extends JpaRepository<Result, Long> {
     public Iterable<Result> findByExamination(Examination examination);
     Result findByExaminationAndStudent(Examination examination, Student student);
+    Iterable<Result> findByExaminationAndDone(Examination examination, Boolean done);
 }

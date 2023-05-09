@@ -35,6 +35,11 @@ public class ExaminationController {
         this.questionRepository = questionRepository;
         this.resultRepository = resultRepository;
     }
+    public void detailDate(Examination examination, Model model){
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        model.addAttribute("startDate", simpleDateFormat.format(examination.getStartDate()));
+        model.addAttribute("endDate", simpleDateFormat.format(examination.getEndDate()));
+    }
 
     @GetMapping("/{id}")
     public String examination(@PathVariable("id") Long id, Model model, Authentication authentication){
@@ -58,13 +63,11 @@ public class ExaminationController {
                 model.addAttribute("remain", examination.getTotalTime());
             }
         }
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
         model.addAttribute("exam", examination);
         model.addAttribute("role", user.getRole());
-        model.addAttribute("startDate", simpleDateFormat.format(examination.getStartDate()));
-        model.addAttribute("endDate", simpleDateFormat.format(examination.getEndDate()));
         Iterable<Question> questions = questionRepository.findByExamination(examination);
         model.addAttribute("questions", questions);
+        detailDate(examination, model);
         return "examination";
     }
 
@@ -102,9 +105,7 @@ public class ExaminationController {
             model.addAttribute("questionWrapper", questionWrapper);
             model.addAttribute("remain", remain);
         }
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        model.addAttribute("startDate", simpleDateFormat.format(examination.getStartDate()));
-        model.addAttribute("endDate", simpleDateFormat.format(examination.getEndDate()));
+        detailDate(examination, model);
         model.addAttribute("exam", examination);
         return "process_examination";
     }
@@ -133,5 +134,28 @@ public class ExaminationController {
         result.setNumberOfCorrectAnswers(numberOfCorrectAnswers);
         resultRepository.save(result);
         return "redirect:/examination/"+id+"/process";
+    }
+
+    @GetMapping("{id}/results")
+    public String results(@PathVariable("id") Long id, Model model, Authentication authentication){
+        User user = userRepository.findByUsername(authentication.getName());
+        Examination examination = examinationRepository.findById(id).orElseThrow();
+        Course course = examination.getCourse();
+        if(user.getRole().equals("TEACHER")){
+            Teacher teacher = teacherRepository.findByUser(user);
+            if(!course.getTeacher().equals(teacher))
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }else if(user.getRole().equals("STUDENT")){
+            Student student = studentRepository.findByUser(user);
+            if(!course.getStudentList().contains(student))
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
+        List<Question> questions = (List<Question>) questionRepository.findByExamination(examination);
+        model.addAttribute("numberOfQuestions", questions.size());
+        Iterable<Result> results = resultRepository.findByExaminationAndDone(examination, true);
+        model.addAttribute("results", results);
+        model.addAttribute("exam", examination);
+        detailDate(examination, model);
+        return "results";
     }
 }
