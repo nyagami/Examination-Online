@@ -7,5 +7,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ExaminationRepository extends JpaRepository<Examination, Long> {
-    Examination findByCourseAndIsVisible(Course course, Boolean visible);
+    Iterable<Examination> findByCourseAndIsVisible(Course course, Boolean visible);
+    Iterable<Examination> findByCourse(Course course);
 }

@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.Date;
 
@@ -16,7 +18,8 @@ public class Examination {
     private Long id;
     private String title = "Chưa đặt tên";
     private String description = "Bài kiểm tra";
-    @ManyToOne(targetEntity = Course.class, cascade = CascadeType.REMOVE)
+    @ManyToOne(targetEntity = Course.class)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @NotNull(message = "Bài kiểm tra phải có lớp")
     private Course course;
     @NotNull(message = "Hãy thêm ngày bắt đầu")
