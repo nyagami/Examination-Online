@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.List;
 
@@ -22,7 +24,8 @@ public class Course {
     private List<Student> studentList;
     @ManyToMany(fetch = FetchType.EAGER, targetEntity = Student.class)
     private List<Student> studentQueue;
-    @ManyToOne(targetEntity = Teacher.class, cascade = CascadeType.REMOVE)
+    @ManyToOne(targetEntity = Teacher.class)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @NotNull(message = "Lớp học cần có giảng viên")
     private Teacher teacher;
     @PrePersist
