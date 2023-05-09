@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
     <script th:src="@{/js/jquery.min.js}"></script>
-    <title th:text="${exam.title}">Bài kiểm tra:</title>
+    <title th:text="${exam.title}"></title>
 </head>
 <body>
 <header class="text-center">
@@ -118,7 +118,19 @@
                 </script>
         </div>
         <div th:case="'STUDENT'">
-            <h1>student</h1>
+            <div th:switch="${remain < exam.totalTime}">
+                <div th:case="true">
+                    <a th:href="@{'/examination/' + ${exam.id}} + '/process'">
+                        <button type="button" class="btn btn-primary">Bắt đầu</button>
+                    </a>
+                </div>
+                <div th:case="false">
+                    Tiếp tục <br>
+                    <a th:href="@{'/examination/' + ${exam.id}} + '/process'">
+                        <button type="button" class="btn btn-primary" th:text="${'còn lại ' + remain / 60 + ' phút'}"></button>
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -219,5 +231,6 @@
         });
     }
     renderQuestions();
+
 </script>
 </html>
