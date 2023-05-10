@@ -13,9 +13,11 @@
 <body>
 <div class="wrap">
   <div class="header">
-    <button class="home_btn">
-      Home
-    </button>
+    <a th:href="@{/student/home}">
+      <button class="home_btn">
+        Home
+      </button>
+    </a>
 
     <div class="dropdown">
       <button class="profile_btn">
@@ -40,12 +42,14 @@
       <table class="w3-table-all list">
         <thead>
         <tr class="w3-blue">
+          <th>ID Sinh viên</th>
           <th>Họ và tên</th>
           <th>email</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="student: ${students}">
+          <td th:text="${student.id}"></td>
           <td th:text="${student.name}"></td>
           <td th:text="${student.email == null ? 'Không có' : student.email}"></td>
         </tr>
