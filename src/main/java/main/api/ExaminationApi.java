@@ -4,6 +4,7 @@ import main.data.*;
 import main.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -11,7 +12,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/api/examination", produces = "application/json")
+@RequestMapping(value = "/api/examination", produces = "application/json", consumes = MediaType.APPLICATION_JSON_VALUE)
 @CrossOrigin("*")
 public class ExaminationApi {
     private final ExaminationRepository examinationRepository;
@@ -46,23 +47,27 @@ public class ExaminationApi {
         throw new ResponseStatusException(HttpStatus.FORBIDDEN);
     }
 
-    @PostMapping("/add")
-    public Examination create(@RequestBody Examination examination, Authentication authentication){
-        Course course = examination.getCourse();
-        if(course == null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+    @PostMapping("/add/{courseId}")
+    public Examination create(@PathVariable("courseId") Long courseId, @RequestBody Examination examination, Authentication authentication){
+        Course course = courseRepository.findById(courseId).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST));
         Teacher teacher = course.getTeacher();
-        if(teacher == null) throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        if(!teacher.getUser().getUsername().equals(authentication.getName())) throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        examination.setCourse(course);
         return examinationRepository.save(examination);
     }
 
-
-    @DeleteMapping("delete/{id}")
+    @PutMapping("/update")
+    public Examination update(@RequestBody Examination examination, Authentication authentication){
+        Examination origin = examinationRepository.findById(examination.getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST));
+        examination.setCourse(origin.getCourse());
+        return examinationRepository.save(examination);
+    }
+    @DeleteMapping("/delete/{id}")
     public void delete (@PathVariable("id") Long id, Authentication authentication){
         User user = userRepository.findByUsername(authentication.getName());
         Teacher teacher = teacherRepository.findByUser(user);
         if(teacher == null) throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-        Examination examination = examinationRepository.findById(id).orElseThrow();
+        Examination examination = examinationRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST));
         examinationRepository.delete(examination);
-        return;
     }
 }
