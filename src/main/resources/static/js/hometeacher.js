@@ -39,8 +39,8 @@ function addCourse(){
             alert(error.message);
         });
 }
-function deleteCourse(){
-    var courseId = document.getElementById("courseId").value;
+function deleteCourse(ele){
+    var courseId = ele.getAttribute("data-id");
     var api = '/api/course/delete/'+courseId;
     fetch(api ,{
         method: 'DELETE',
