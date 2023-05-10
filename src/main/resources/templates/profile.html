@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Profile</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/profile.css}">
+</head>
+<body>
+<section style="background-color: #eee;">
+  <div class="container py-5">
+    <div class="row">
+      <div class="col-lg-4">
+        <div class="card mb-4">
+          <div class="card-body text-center">
+            <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="avatar"
+              class="rounded-circle img-fluid" style="width: 150px;">
+            <h5 class="my-3" th:text="${user.name}"></h5>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-8">
+        <div class="card mb-4">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-sm-3">
+                <p class="mb-0">Tên đầy đủ</p>
+              </div>
+              <div class="col-sm-9">
+                <input id="name" type="text" th:value="${user.name}">
+              </div>
+            </div>
+            <hr>
+            <div class="row">
+              <div class="col-sm-3">
+                <p class="mb-0">Email</p>
+              </div>
+              <div class="col-sm-9">
+                <input id = "email" type="email" th:value="${user.email}">
+              </div>
+            </div>
+            <hr>
+            <div class="row">
+              <div class="col-sm-3">
+                <p class="mb-0">Số điện thoại</p>
+              </div>
+              <div class="col-sm-9">
+                <input id = "phoneNumber" type="text" th:value="${user.phoneNumber}">
+              </div>
+            </div>
+            <hr>
+            <div class="row">
+              <div class="col-sm-3">
+                <p class="mb-0">Ngày sinh</p>
+              </div>
+              <div class="col-sm-9">
+                <input id = "dateOfBirth" type="text" th:value="${dateOfBirth}">
+              </div>
+            </div>
+            <hr>
+            <div class="row">
+              <div class="col-sm-3">
+                <p class="mb-0">Địa chỉ</p>
+              </div>
+              <div class="col-sm-9">
+                <input id = "address" type="text" th:value="${user.address}">
+              </div>
+            </div>
+             	<button type="button" onclick="capnhap()">Cập nhập</button>
+          </div>
+        </div>
+    </div>
+  </div>
+ 
+</section>
+	<script th:src="@{/js/profile.js}"></script>
+</body>
+</html>
