@@ -22,6 +22,13 @@
             </a>
         </div>
         <div th:case="false">
+            <div class="text-center">
+                <button type="button" class="btn btn-info">
+                    <span id="cooldown" th:data-remain="${remain}"
+                          th:text="'Bắt đầu đếm ngược'"
+                    ></span>
+                </button>
+            </div>
             <ul th:each="question: ${questions}" class="list-group">
                 <li class="list-group-item question mt-5 pb-5" th:data-description="${question.description}"
                     th:data-answer="${question.answer}" th:data-id="${question.id}"
@@ -107,5 +114,22 @@
         });
     }
     renderQuestions();
+</script>
+<script>
+    cd = $('#cooldown');
+    var distance = Number(cd.attr('data-remain'));
+    var x = setInterval(function() {
+      var hours = Math.floor(distance / (60 * 60));
+      var minutes = Math.floor((distance % (60 * 60)) / 60);
+      var seconds = Math.floor(distance % 60);
+
+      cd.html(hours + " giờ " + minutes + " phút " + seconds + " giây");
+
+      if (distance < 0) {
+        clearInterval(x);
+        cd.html('Hết giờ');
+      }
+      distance -= 1;
+    }, 1000);
 </script>
 </html>
