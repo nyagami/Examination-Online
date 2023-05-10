@@ -17,6 +17,7 @@ public class Examination {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title = "Chưa đặt tên";
+    @Column(length = 500)
     private String description = "Bài kiểm tra";
     @ManyToOne(targetEntity = Course.class)
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -29,7 +30,7 @@ public class Examination {
     @Column(nullable = false)
     private Date endDate;
     @NotNull
-    private Long totalTime = (long) 60; // in seconds
+    private Long totalTime = (long) 600; // in seconds
     @Column(nullable = false)
     @NotNull(message = "Bài kiểm tra phải có điểm")
     private Float points;

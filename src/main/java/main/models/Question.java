@@ -20,12 +20,12 @@ public class Question {
     @NotNull(message = "Câu hỏi phải nằm trong bài kiểm tra")
     private Examination examination;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 500)
     @NotNull(message = "Cần phải có đề bài")
     private String description;
     @Column(length = 500)
     @NotNull(message = "Cần phải có câu trả lời")
-    private String answer;  // split by &&&
+    private String answer;  // split by #~~~#
     @Max(value = 4, message = "Không có đáp án nào như vậy")
     @NotNull(message = "Câu hỏi cần có câu trả lời đúng")
     private Integer correctAnswer;

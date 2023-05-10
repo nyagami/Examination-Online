@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.util.Date;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -22,5 +24,11 @@ public class Result {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @NotNull
     private Examination examination;
+    private Date startTime;
     private Integer numberOfCorrectAnswers = 0;
+    private Boolean done = false;
+    @PrePersist
+    void startTime(){
+        this.startTime = new Date();
+    }
 }
