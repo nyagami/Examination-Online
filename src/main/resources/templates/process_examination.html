@@ -40,13 +40,12 @@
 
 </body>
 <script>
-    function renderQuestion(ele, id, des, answer){
+    function renderQuestion(ele, id, no, des, answer){
         answers = answer.split('#~~~#');
         html = `
         <div class="card">
           <div>
-           <span class="text-danger d-none">Có lỗi</span>
-            <h4>Câu hỏi</h4>
+            <h4>Câu hỏi số ${no}</h4>
             <p>${des}</p>
           </div>
           <ul class="text-left list-group" data-id="${id}">
@@ -84,12 +83,12 @@
         ele.html(html);
     }
     function renderQuestions(){
-        $('.question').each(function(){
+        $('.question').each(function(index){
             q = $(this);
             des = q.attr('data-description');
             answer = q.attr('data-answer');
             id = q.attr('data-id');
-            renderQuestion(q, id, des, answer);
+            renderQuestion(q, id, index + 1, des, answer);
         });
     }
     function choose(ele){
