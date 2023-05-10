@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Course</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" th:href="@{/css/course_teacher.css}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
+  <script th:src="@{/js/jquery.min.js}"></script>
+</head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <button class="home_btn">
+      Home
+    </button>
+
+    <div class="dropdown">
+      <button class="profile_btn">
+        Profile
+        <i class="fa-solid fa-caret-down"></i>
+      </button>
+    </div>
+
+  </div>
+  <div>
+    <div class="infoClass">
+      <div>
+        <h1>Tên lớp : </h1>
+        <span th:text="${course.name}"></span>
+      </div>
+      <div>
+        <h3>Tên Giảng viên :</h3>
+        <span th:text="${teacher.name}"></span>
+      </div>
+    </div>
+    <div class="listClass">
+      <table class="w3-table-all list">
+        <thead>
+        <tr class="w3-blue">
+          <th>Họ và tên</th>
+          <th>email</th>
+        </tr>
+        </thead>
+        <tbody>
+            <tr th:each="student: ${students}">
+                <td th:text="${student.name}"></td>
+                <td th:text="${student.email == null ? 'Không có' : student.email}"></td>
+            </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <table class="w3-table-all exam">
+      <thead>
+
+      <tr class="w3-blue">
+        <td>ID</td>
+        <th>Bài kiểm tra</th>
+        <th>Ngày bắt đầu</th>
+          <th>Ngày kết thúc</th>
+          <th>Thời gian làm</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="exam: ${exams}">
+        <td th:text="${exam.id}"></td>
+        <td>
+          <a th:href="@{'/examination/' + ${exam.id}}" th:text="${exam.title}"></a>
+        </td>
+          <td th:text="${exam.startDate.toString().split(' ')[0]}"></td>
+          <td th:text="${exam.endDate.toString().split(' ')[0]}"></td>
+          <td th:text="${exam.totalTime/60 + ' phút'}"></td>
+        <td>
+          <button class="button button1">Sửa bài kiểm tra</button>
+        </td>
+          <td><button class="button button2" th:data-id="${exam.id}" onclick="deleteExam(this)">Xoá bài kiểm tra</button></td>
+      </tr>
+      </tbody>
+    </table>
+    <div class="add">
+      <button class="button button1">Thêm bài kiểm tra</button>
+    </div>
+<!--      <div class="processorWrap">
+          <h1 class="headingWaitProcess">Danh sách sinh viên chờ duyệt</h1>
+          <table class="w3-table-all processor">
+              <thead>
+              <tr class="w3-blue">
+                  <th>Tên sinh viên</th>
+                  <th>Email</th>
+                  <th>Lựa chọn</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                  <td>Vũ Tiến Hải</td>
+                  <td>vutienhai202@gmail.com</td>
+                  <td>
+                      <button class="button button1">Đồng ý</button>
+                      <button class="button button2">Huỷ</button>
+                  </td>
+              </tr>
+              </tbody>
+          </table>
+      </div>-->
+  </div>
+
+</div>
+</body>
+<script>
+  deleteExam = (ele) => {
+    btn = $(ele);
+    id = btn.attr('data-id');
+    fetch(`/api/examination/delete/${id}`, {
+      method: 'DELETE'
+     }).then(res => {
+        if(res.ok){
+          alert('Xoá thành công');
+          window.location.href=window.location.href
+        }else{
+          alert('Có lỗi');
+        }
+     });
+  }
+</script>
+</html>

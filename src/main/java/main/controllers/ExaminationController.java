@@ -44,29 +44,32 @@ public class ExaminationController {
     @GetMapping("/{id}")
     public String examination(@PathVariable("id") Long id, Model model, Authentication authentication){
         User user = userRepository.findByUsername(authentication.getName());
-        Examination examination = examinationRepository.findById(id).orElseThrow();
+        Examination examination = examinationRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         Course course = examination.getCourse();
         if(user.getRole().equals("TEACHER")){
             Teacher teacher = teacherRepository.findByUser(user);
             if(!course.getTeacher().equals(teacher))
                 throw  new ResponseStatusException(HttpStatus.FORBIDDEN);
+            Iterable<Question> questions = questionRepository.findByExamination(examination);
+            model.addAttribute("questions", questions);
         }else if(user.getRole().equals("STUDENT") && examination.getIsVisible()){
             Student student = studentRepository.findByUser(user);
             if(!course.getStudentList().contains(student) || !examination.getIsVisible())
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN);
             Result result = resultRepository.findByExaminationAndStudent(examination, student);
+            Date now = new Date();
             if(result != null){
-                Date now = new Date();
-                Long remain = examination.getTotalTime() - (now.getTime() - result.getStartTime().getTime())/1000;
+                Long remain = result.getDone() ? 0 : examination.getTotalTime() - (now.getTime() - result.getStartTime().getTime())/1000;
                 model.addAttribute("remain", remain);
             }else{
                 model.addAttribute("remain", examination.getTotalTime());
             }
+            String status = (now.after(examination.getStartDate()) && now.before(examination.getEndDate())) ? "DURING" :
+                    (now.after(examination.getEndDate()) ? "ENDED" : "COMING");
+            model.addAttribute("status", status);
         }
         model.addAttribute("exam", examination);
         model.addAttribute("role", user.getRole());
-        Iterable<Question> questions = questionRepository.findByExamination(examination);
-        model.addAttribute("questions", questions);
         detailDate(examination, model);
         return "examination";
     }
@@ -75,7 +78,7 @@ public class ExaminationController {
     public String process(@PathVariable("id") Long id, Model model, Authentication authentication){
         User user = userRepository.findByUsername(authentication.getName());
         if(user == null) throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-        Examination examination = examinationRepository.findById(id).orElseThrow();
+        Examination examination = examinationRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         Student student = studentRepository.findByUser(user);
         if(!examination.getCourse().getStudentList().contains(student))
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
@@ -119,7 +122,7 @@ public class ExaminationController {
     public String processSubmit(@PathVariable("id") Long id, @ModelAttribute QuestionWrapper questionWrapper, Authentication authentication){
         User user = userRepository.findByUsername(authentication.getName());
         Student student = studentRepository.findByUser(user);
-        Examination examination = examinationRepository.findById(id).orElseThrow();
+        Examination examination = examinationRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         Result result = resultRepository.findByExaminationAndStudent(examination, student);
         if(result == null) throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         result.setDone(true);
@@ -133,7 +136,7 @@ public class ExaminationController {
         }
         result.setNumberOfCorrectAnswers(numberOfCorrectAnswers);
         resultRepository.save(result);
-        return "redirect:/examination/"+id+"/process";
+        return "redirect:/examination/"+id+"/results";
     }
 
     @GetMapping("{id}/results")

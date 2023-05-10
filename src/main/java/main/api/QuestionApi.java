@@ -1,6 +1,5 @@
 package main.api;
 
-import main.data.ExaminationRepository;
 import main.data.QuestionRepository;
 import main.models.Question;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +15,7 @@ import org.springframework.web.server.ResponseStatusException;
 public class QuestionApi {
     private final QuestionRepository questionRepository;
     @Autowired
-    QuestionApi(ExaminationRepository examinationRepository, QuestionRepository questionRepository){
+    QuestionApi(QuestionRepository questionRepository){
         this.questionRepository = questionRepository;
     }
 
@@ -31,7 +30,7 @@ public class QuestionApi {
 
     @DeleteMapping("/delete/{id}")
     public void deleteQuestion(@PathVariable("id") Long id, Authentication authentication){
-        Question question = questionRepository.findById(id).orElseThrow();
+        Question question = questionRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         if(authentication.getName().equals(question.getExamination().getCourse().getTeacher().getUser().getUsername())){
             questionRepository.delete(question);
         }
@@ -40,7 +39,7 @@ public class QuestionApi {
     @PutMapping("/update/{id}")
     public Question updateQuestion(@PathVariable Long id, @RequestBody Question question, Authentication authentication){
         if(question.getDescription().isBlank()) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cần có đề bài");
-        Question origin = questionRepository.findById(id).orElseThrow();
+        Question origin = questionRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         if(!origin.getId().equals(question.getId())) throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         if(authentication.getName().equals(question.getExamination().getCourse().getTeacher().getUser().getUsername())){
             origin.setAnswer(question.getAnswer());
