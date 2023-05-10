@@ -20,6 +20,7 @@
             <th scope="col">Mã bài làm</th>
             <th scope="col">Sinh viên</th>
             <th scope="col">Số câu trả lời đúng</th>
+            <th scope="col">Điểm</th>
         </tr>
         </thead>
         <tbody>
@@ -27,6 +28,7 @@
             <th scope="row" th:text="${result.id}"></th>
             <td th:text="${result.student.name}"></td>
             <td th:text="${result.numberOfCorrectAnswers + '/' + numberOfQuestions}"></td>
+            <td th:text="${#numbers.formatDecimal(exam.points * result.numberOfCorrectAnswers / numberOfQuestions, 0, 2) + '/' + exam.points}"></td>
         </tr>
         </tbody>
     </table>
