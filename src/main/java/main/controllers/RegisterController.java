@@ -8,6 +8,7 @@ import main.models.Student;
 import main.models.Teacher;
 import main.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,7 +30,15 @@ public class RegisterController {
 	private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
 	@GetMapping("/register")
-	public String register(@RequestParam(value = "error",required = false) String error,Model model){
+	public String register(@RequestParam(value = "error",required = false) String error, Model model, Authentication authentication){
+		if(authentication!=null){
+			User user = userRepository.findByUsername(authentication.getName());
+			if(user.getRole().equals("STUDENT"))
+				return "redirect:/student/home";
+			else{
+				return "redirect:/teacher/home";
+			}
+		}
 		if(error!=null) {
 			if(error.equals("password"))
 				model.addAttribute("error", "Xác nhận mật khẩu của bạn không đúng");
