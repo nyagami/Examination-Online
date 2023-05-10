@@ -32,7 +32,7 @@ public class ExaminationApi {
 
     @GetMapping("/course/{courseId}")
     Iterable<Examination> findByCourse(@PathVariable("courseId") Long courseId, Authentication authentication){
-        Course course = courseRepository.findById(courseId).orElseThrow();
+        Course course = courseRepository.findById(courseId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         User user = userRepository.findByUsername(authentication.getName());
         if(user.getRole().equals("TEACHER")){
             if(course.getTeacher().getUser().equals(user)){
@@ -41,11 +41,7 @@ public class ExaminationApi {
         }else if(user.getRole().equals("STUDENT")){
             List<Student> studentList = course.getStudentList();
             Student student = studentRepository.findByUser(user);
-            for(Student std: studentList){
-                if(std.equals(student)){
-                    return examinationRepository.findByCourseAndIsVisible(course, true);
-                }
-            }
+            if(studentList.contains(student)) return examinationRepository.findByCourseAndIsVisible(course, true);
         }
         throw new ResponseStatusException(HttpStatus.FORBIDDEN);
     }
