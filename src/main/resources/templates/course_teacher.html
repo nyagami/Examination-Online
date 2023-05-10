@@ -22,11 +22,6 @@
         Profile
         <i class="fa-solid fa-caret-down"></i>
       </button>
-      <div class="dropdown-content">
-        <a href="#">Profile</a>
-        <a href="#">Help</a>
-        <a href="#">Log out</a>
-      </div>
     </div>
 
   </div>
@@ -34,120 +29,59 @@
     <div class="infoClass">
       <div>
         <h1>Tên lớp : </h1>
-        <span>ELE0013</span>
+        <span th:text="${course.name}"></span>
       </div>
       <div>
         <h3>Tên Giảng viên :</h3>
-        <span>Đặng Duy Quyền</span>
+        <span th:text="${teacher.name}"></span>
       </div>
     </div>
     <div class="listClass">
       <table class="w3-table-all list">
         <thead>
         <tr class="w3-blue">
-          <th>Tên</th>
-          <th>MSV</th>
+          <th>Họ và tên</th>
+          <th>email</th>
         </tr>
         </thead>
         <tbody>
-        <tr>
-          <td>Hiếu</td>
-          <td>B20DCCN259</td>
-
-        </tr>
-        <tr>
-          <td>Quân</td>
-          <td>B20DCCN259</td>
-
-        </tr>
-        <tr>
-          <td>Mạnh</td>
-          <td>B20DCCN259</td>
-        </tr>
-        <tr>
-          <td>Mạnh</td>
-          <td>B20DCCN259</td>
-        </tr>
-        <tr>
-          <td>Mạnh</td>
-          <td>B20DCCN259</td>
-        </tr>
-        <tr>
-          <td>Mạnh</td>
-          <td>B20DCCN259</td>
-        </tr>
-        <tr>
-          <td>Mạnh</td>
-          <td>B20DCCN259</td>
-        </tr>
-        <tr>
-          <td>Mạnh</td>
-          <td>B20DCCN259</td>
-        </tr>
-        <tr>
-          <td>Mạnh</td>
-          <td>B20DCCN259</td>
-        </tr>
-        <tr>
-          <td>Mạnh</td>
-          <td>B20DCCN259</td>
-        </tr>
-        <tr>
-          <td>Mạnh</td>
-          <td>B20DCCN259</td>
-        </tr>
-        <tr>
-          <td>Mạnh</td>
-          <td>B20DCCN259</td>
-        </tr>
-        <tr>
-          <td>Mạnh</td>
-          <td>B20DCCN259</td>
-        </tr>
-        <tr>
-          <td>Mạnh</td>
-          <td>B20DCCN259</td>
-        </tr>
-        <tr>
-          <td>Mạnh</td>
-          <td>B20DCCN259</td>
-        </tr><tr>
-          <td>Mạnh</td>
-          <td>B20DCCN259</td>
-        </tr>
-        <tr>
-          <td>Mạnh</td>
-          <td>B20DCCN259</td>
-        </tr>
+            <tr th:each="student: ${students}">
+                <td th:text="${student.name}"></td>
+                <td th:text="${student.email == null ? 'Không có' : student.email}"></td>
+            </tr>
         </tbody>
       </table>
     </div>
 
     <table class="w3-table-all exam">
       <thead>
+
       <tr class="w3-blue">
-        <th>Tên bài kiểm tra </th>
-        <th></th>
+        <th>Bài kiểm tra</th>
+        <th>Ngày bắt đầu</th>
+          <th>Ngày kết thúc</th>
+          <th>Thời gian làm</th>
       </tr>
       </thead>
       <tbody>
-      <tr>
+      <tr th:each="exam: ${exams}">
         <td>
-          <a href="./examination.html">
-            Kiểm tra cuối kì
-          </a>
+          <a th:href="@{'/examination/' + ${exam.id}}" th:text="${exam.title}"></a>
         </td>
+          <td th:text="${exam.startDate.toString().split(' ')[0]}"></td>
+          <td th:text="${exam.endDate.toString().split(' ')[0]}"></td>
+          <td th:text="${exam.totalTime/60 + ' phút'}"></td>
         <td>
           <button class="button button1">Sửa bài kiểm tra</button>
-          <button class="button button2">Xoá bài kiểm tra</button>
         </td>
+          <td><button class="button button2">Xoá bài kiểm tra</button></td>
       </tr>
       </tbody>
     </table>
     <div class="add">
       <button class="button button1">Thêm bài kiểm tra</button>
     </div>
-      <div class="processorWrap">
+<!--      <div class="processorWrap">
           <h1 class="headingWaitProcess">Danh sách sinh viên chờ duyệt</h1>
           <table class="w3-table-all processor">
               <thead>
@@ -166,26 +100,9 @@
                       <button class="button button2">Huỷ</button>
                   </td>
               </tr>
-              <tr>
-                  <td>Vũ Tiến Hải</td>
-                  <td>vutienhai202@gmail.com</td>
-                  <td>
-                      <button class="button button1">Đồng ý</button>
-                      <button class="button button2">Huỷ</button>
-                  </td>
-              </tr>
-              <tr>
-                  <td>Vũ Tiến Hải</td>
-                  <td>vutienhai202@gmail.com</td>
-                  <td>
-                      <button class="button button1">Đồng ý</button>
-                      <button class="button button2">Huỷ</button>
-                  </td>
-              </tr>
               </tbody>
           </table>
-      </div>
-
+      </div>-->
   </div>
 
 </div>
