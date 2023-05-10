@@ -43,7 +43,7 @@
                             </td>
                             <td th:text="${course.code}"></td>
                             <td><span th:text="${#lists.size(course.studentList)}"></span></td>
-                            <td><button type="button" style="padding: 5px 15px; background-color: red;border-radius: 4px;" onclick="deleteCourse()">Xóa</button></td>
+                            <td><button th:data-id="${course.id}" type="button" style="padding: 5px 15px; background-color: red;border-radius: 4px;" onclick="deleteCourse(this)">Xóa</button></td>
                         </tr>
                     </div>
                     </tbody>
