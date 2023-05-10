@@ -1,15 +1,20 @@
 package main.api;
 
+import jakarta.validation.Valid;
 import main.data.*;
 import main.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/api/examination", produces = "application/json", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -48,7 +53,7 @@ public class ExaminationApi {
     }
 
     @PostMapping("/add/{courseId}")
-    public Examination create(@PathVariable("courseId") Long courseId, @RequestBody Examination examination, Authentication authentication){
+    public Examination create(@PathVariable("courseId") Long courseId, @Valid @RequestBody Examination examination, Authentication authentication){
         Course course = courseRepository.findById(courseId).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST));
         Teacher teacher = course.getTeacher();
         if(!teacher.getUser().getUsername().equals(authentication.getName())) throw new ResponseStatusException(HttpStatus.FORBIDDEN);
@@ -57,7 +62,7 @@ public class ExaminationApi {
     }
 
     @PutMapping("/update")
-    public Examination update(@RequestBody Examination examination, Authentication authentication){
+    public Examination update(@Valid @RequestBody Examination examination, Authentication authentication){
         Examination origin = examinationRepository.findById(examination.getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST));
         examination.setCourse(origin.getCourse());
         return examinationRepository.save(examination);
@@ -69,5 +74,17 @@ public class ExaminationApi {
         if(teacher == null) throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         Examination examination = examinationRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST));
         examinationRepository.delete(examination);
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public Map<String, String> apiError(MethodArgumentNotValidException ex){
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getAllErrors().forEach((error) -> {
+            String fieldName = ((FieldError) error).getField();
+            String errorMessage = error.getDefaultMessage();
+            errors.put(fieldName, errorMessage);
+        });
+        return errors;
     }
 }

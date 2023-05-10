@@ -128,6 +128,11 @@
 
 </div>
 </body>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var course = [[${course}]];
+    /*]]>*/
+</script>
 <script>
   deleteExam = (ele) => {
     btn = $(ele);
@@ -160,6 +165,7 @@
       endDate: $(".end_date").val(),
       totalTime: $(".total_time").val(),
       points: $('#data-points').val(),
+      course
     }
   }
 
@@ -222,8 +228,10 @@
         if (res.ok){
           alert("Cập nhật bài kiểm tra thành công");
           window.location.href=window.location.href
+        }else{
+          alert('Thất bại, vui lòng kiểm tra lại dữ liệu');
         }
-      }).catch(er => (alert(`Lỗi ${er}`)));
+      })
     });
   }
 
