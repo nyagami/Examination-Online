@@ -46,10 +46,10 @@
         </tr>
         </thead>
         <tbody>
-            <tr th:each="student: ${students}">
-                <td th:text="${student.name}"></td>
-                <td th:text="${student.email == null ? 'Không có' : student.email}"></td>
-            </tr>
+        <tr th:each="student: ${students}">
+          <td th:text="${student.name}"></td>
+          <td th:text="${student.email == null ? 'Không có' : student.email}"></td>
+        </tr>
         </tbody>
       </table>
     </div>
@@ -61,8 +61,8 @@
         <td>ID</td>
         <th>Bài kiểm tra</th>
         <th>Ngày bắt đầu</th>
-          <th>Ngày kết thúc</th>
-          <th>Thời gian làm</th>
+        <th>Ngày kết thúc</th>
+        <th>Thời gian làm</th>
       </tr>
       </thead>
       <tbody>
@@ -71,41 +71,72 @@
         <td>
           <a th:href="@{'/examination/' + ${exam.id}}" th:text="${exam.title}"></a>
         </td>
-          <td th:text="${exam.startDate.toString().split(' ')[0]}"></td>
-          <td th:text="${exam.endDate.toString().split(' ')[0]}"></td>
-          <td th:text="${exam.totalTime/60 + ' phút'}"></td>
+        <td th:text="${exam.startDate.toString().split(' ')[0]}"></td>
+        <td th:text="${exam.endDate.toString().split(' ')[0]}"></td>
+        <td th:text="${exam.totalTime/60 + ' phút'}"></td>
         <td>
-          <button class="button button1">Sửa bài kiểm tra</button>
+          <button class="button button1"
+                  th:data-id = "${exam.id}"
+                  th:title = "${exam.title}"
+                  th:start-date = "${exam.startDate}"
+                  th:end-date = "${exam.endDate}"
+                  th:total-time = "${exam.totalTime}"
+                  onclick = "updateExam(this)">
+            Sửa bài kiểm tra
+          </button>
         </td>
-          <td><button class="button button2" th:data-id="${exam.id}" onclick="deleteExam(this)">Xoá bài kiểm tra</button></td>
+        <td><button class="button button2" th:data-id="${exam.id}" onclick="deleteExam(this)">Xoá bài kiểm tra</button></td>
       </tr>
       </tbody>
     </table>
     <div class="add">
-      <button class="button button1">Thêm bài kiểm tra</button>
+      <button class="button button1 btn-add__ex"  >Thêm bài kiểm tra</button>
     </div>
-<!--      <div class="processorWrap">
-          <h1 class="headingWaitProcess">Danh sách sinh viên chờ duyệt</h1>
-          <table class="w3-table-all processor">
-              <thead>
-              <tr class="w3-blue">
-                  <th>Tên sinh viên</th>
-                  <th>Email</th>
-                  <th>Lựa chọn</th>
-              </tr>
-              </thead>
-              <tbody>
-              <tr>
-                  <td>Vũ Tiến Hải</td>
-                  <td>vutienhai202@gmail.com</td>
-                  <td>
-                      <button class="button button1">Đồng ý</button>
-                      <button class="button button2">Huỷ</button>
-                  </td>
-              </tr>
-              </tbody>
-          </table>
-      </div>-->
+
+    <!--      <div class="processorWrap">
+              <h1 class="headingWaitProcess">Danh sách sinh viên chờ duyệt</h1>
+              <table class="w3-table-all processor">
+                  <thead>
+                  <tr class="w3-blue">
+                      <th>Tên sinh viên</th>
+                      <th>Email</th>
+                      <th>Lựa chọn</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr>
+                      <td>Vũ Tiến Hải</td>
+                      <td>vutienhai202@gmail.com</td>
+                      <td>
+                          <button class="button button1">Đồng ý</button>
+                          <button class="button button2">Huỷ</button>
+                      </td>
+                  </tr>
+                  </tbody>
+              </table>
+          </div>-->
+
+    <div class="formModal">
+      <div  class="formGroup">
+        <h1 style="text-align: center">Thông tin bài kiểm tra</h1>
+        <div class="form">
+          <label>Tên bài</label><br>
+          <input class = "name__ex" type="text"><br>
+
+          <label>Ngày bắt đầu</label><br>
+          <input class="start_date" type="Date"><br>
+
+          <label>Ngày kết thúc</label><br>
+          <input class="end_date" type="Date"><br>
+
+          <label>Thời gian làm</label><br>
+          <input class="total_time" type="text"><br>
+          <input class = "btn_submit" th:data-id = "${course.id}" onclick="createExam(this)" type="submit" value="Hoàn tất" style="width: 60% ; margin: 0 auto" >
+          <input class = "btn_update" type="submit" value="Cập nhật" style="width: 60% ; margin: 0 auto" >
+        </div>
+      </div>
+    </div>
+
   </div>
 
 </div>
@@ -116,14 +147,90 @@
     id = btn.attr('data-id');
     fetch(`/api/examination/delete/${id}`, {
       method: 'DELETE'
-     }).then(res => {
-        if(res.ok){
-          alert('Xoá thành công');
-          window.location.href=window.location.href
-        }else{
-          alert('Có lỗi');
-        }
-     });
+    }).then(res => {
+      if(res.ok){
+        alert('Xoá thành công');
+        window.location.href=window.location.href
+      }else{
+        alert('Có lỗi');
+      }
+    });
   }
+  $('.btn-add__ex').click(function(){
+    $(".formModal").attr("style", "display: block;");
+  })
+
+  createExam = (e) => {
+    btn = $(e);
+    id = btn.attr("data-id");
+    data = {
+      title: $('.name__ex').val(),
+      startDate: $(".start_date").val(),
+      endDate: $(".end_date").val(),
+      totalTime: $(".total_time").val(),
+      points: '0'
+    }
+    console.log(data);
+
+
+    fetch(`/api/examination/add/${id}`, {
+      method: "POST", // or 'PUT'
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data),
+    }).then(res => {
+      if (res.ok){
+        alert("Thêm bài kiểm tra thành công");
+        window.location.href=window.location.href
+      }
+    }).catch(er => (alert(`Lỗi ${er}`)));
+
+  }
+
+
+  updateExam = (e) => {
+    $(".formModal").attr("style", "display: block;");
+    $(".btn_submit").attr("style", "display: none;");
+    $(".btn_update").attr("style", "display: block;");
+    btn = $(e);
+    id = btn.attr("data-id");
+    title = btn.attr("title")
+    startDate = btn.attr("start-date")
+    endDate = btn.attr("end-date")
+    totalTime = btn.attr("total-time")
+
+    $(".name__ex").val(title);
+    console.log(startDate.split(" ")[0]);
+    $(".start_date").val(startDate.split(" ")[0]);
+    $(".end_date").val(endDate.split(" ")[0]);
+    $(".total_time").val(totalTime);
+    $('.btn_update').click(function() {
+      data = {
+        id: id,
+        title: $('.name__ex').val(),
+        startDate: $(".start_date").val(),
+        endDate: $(".end_date").val(),
+        totalTime: $(".total_time").val(),
+        points: '0'
+      }
+      fetch(`/api/examination/update`, {
+        method: "PUT", // or 'PUT'
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data),
+      }).then(res => {
+        if (res.ok){
+          alert("Cập nhật bài kiểm tra thành công");
+          window.location.href=window.location.href
+        }
+      }).catch(er => (alert(`Lỗi ${er}`)));
+    });
+  }
+
+
 </script>
 </html>
