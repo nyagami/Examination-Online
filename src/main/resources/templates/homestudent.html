@@ -30,10 +30,9 @@
                             <div th:each="course, i:${courses}">
                                 <tr>
                                     <td th:text="${i.index+1}"></td>                     
-                                    <td><a href="@{/student/course}" th:text="${course.name}"></a></td>                     
+                                    <td><a th:href="@{'/student/course/' + ${course.id}}" th:text="${course.name}"></a></td>
                                     <td th:text="${course.teacher.name}"></td>  
-                                    <input type="hidden" id="courseId" th:value="${course.id}">                   
-                                    <td><button type="button" onclick="leaveCourse()" class="btn-out">Rời</button></td>                          
+                                    <td><button type="button" onclick="leaveCourse()" class="btn-out">Rời</button></td>
                                 </tr>
                         </tbody>
                     </table>
