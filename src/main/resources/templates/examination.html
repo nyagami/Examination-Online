@@ -24,7 +24,8 @@
                 Thêm câu hỏi
             </button>
             <!-- Modal -->
-            <div class="modal" id="questionModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="questionModalLabel" aria-hidden="true">
+            <div class="modal" id="questionModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                 aria-labelledby="questionModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -65,7 +66,8 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
-                                    onclick="$('#questionModal').hide()">Huỷ</button>
+                                    onclick="$('#questionModal').hide()">Huỷ
+                            </button>
                             <button type="button" class="btn btn-primary" onclick="postQuestion()">Thêm</button>
                         </div>
                     </div>
@@ -86,7 +88,8 @@
                     /*<![CDATA[*/
                     var examination = [[${exam}]];
                     /*]]>*/
-                </script>
+
+            </script>
             <script type="text/javascript">
                     function postQuestion(){
                         description = $('#q-des').val();
@@ -115,30 +118,45 @@
                             }
                         });
                     }
-                </script>
+
+            </script>
         </div>
         <div th:case="'STUDENT'">
-            <div th:switch="${remain == exam.totalTime}">
-                <div th:case="true">
-                    <a th:href="@{'/examination/' + ${exam.id}} + '/process'">
-                        <button type="button" class="btn btn-primary">Bắt đầu</button>
-                    </a>
+            <div th:switch="${status}">
+                <div th:case="'COMING'">
+                    <h3>Bài kiểm tra chưa bắt đầu</h3>
                 </div>
-                <div th:case="false">
-                    <div th:switch="${remain < 0}">
+                <div th:case="'DURING'">
+                    <div th:switch="${remain == exam.totalTime}">
                         <div th:case="true">
-                            Bài kiểm tra dđã kết thúc, bạn có thể xem kết quả ở đây
-                            <a th:href="@{'/examination/' + ${exam.id}} + '/results'">
-                                <button type="button" class="btn btn-primary">Kết quả</button>
+                            <a th:href="@{'/examination/' + ${exam.id}} + '/process'">
+                                <button type="button" class="btn btn-primary">Bắt đầu</button>
                             </a>
                         </div>
                         <div th:case="false">
-                            Tiếp tục <br>
-                            <a th:href="@{'/examination/' + ${exam.id}} + '/process'">
-                                <button type="button" class="btn btn-primary" th:text="${'còn lại ' + remain / 60 + ' phút'}"></button>
-                            </a>
+                            <div th:switch="${remain <= 0}">
+                                <div th:case="true">
+                                    <h3>Bạn không thể làm bài được nữa, kết quả của bài kiểm tra ở đây</h3>
+                                    <a th:href="@{'/examination/' + ${exam.id}} + '/results'">
+                                        <button type="button" class="btn btn-primary">Kết quả</button>
+                                    </a>
+                                </div>
+                                <div th:case="false">
+                                    Tiếp tục làm bài <br>
+                                    <a th:href="@{'/examination/' + ${exam.id}} + '/process'">
+                                        <button type="button" class="btn btn-primary"
+                                                th:text="${'còn lại ' + remain / 60 + ' phút'}"></button>
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                     </div>
+                </div>
+                <div th:case="'ENDED'">
+                    <h3>Bài kiểm tra đã kết thúc, bạn có thể xem kết quả ở đây</h3>
+                    <a th:href="@{'/examination/' + ${exam.id}} + '/results'">
+                        <button type="button" class="btn btn-primary">Kết quả</button>
+                    </a>
                 </div>
             </div>
         </div>
@@ -241,6 +259,7 @@
         });
     }
     renderQuestions();
+
 
 </script>
 </html>

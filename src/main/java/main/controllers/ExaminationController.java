@@ -50,23 +50,26 @@ public class ExaminationController {
             Teacher teacher = teacherRepository.findByUser(user);
             if(!course.getTeacher().equals(teacher))
                 throw  new ResponseStatusException(HttpStatus.FORBIDDEN);
+            Iterable<Question> questions = questionRepository.findByExamination(examination);
+            model.addAttribute("questions", questions);
         }else if(user.getRole().equals("STUDENT") && examination.getIsVisible()){
             Student student = studentRepository.findByUser(user);
             if(!course.getStudentList().contains(student) || !examination.getIsVisible())
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN);
             Result result = resultRepository.findByExaminationAndStudent(examination, student);
+            Date now = new Date();
             if(result != null){
-                Date now = new Date();
-                Long remain = examination.getTotalTime() - (now.getTime() - result.getStartTime().getTime())/1000;
+                Long remain = result.getDone() ? 0 : examination.getTotalTime() - (now.getTime() - result.getStartTime().getTime())/1000;
                 model.addAttribute("remain", remain);
             }else{
                 model.addAttribute("remain", examination.getTotalTime());
             }
+            String status = (now.after(examination.getStartDate()) && now.before(examination.getEndDate())) ? "DURING" :
+                    (now.after(examination.getEndDate()) ? "ENDED" : "COMING");
+            model.addAttribute("status", status);
         }
         model.addAttribute("exam", examination);
         model.addAttribute("role", user.getRole());
-        Iterable<Question> questions = questionRepository.findByExamination(examination);
-        model.addAttribute("questions", questions);
         detailDate(examination, model);
         return "examination";
     }
