@@ -9,13 +9,14 @@
 <body>
 <section style="background-color: #eee;">
   <div class="container py-5">
-    <div class="row">
-      <div class="col-lg-4">
-        <div class="card mb-4">
-          <div class="card-body text-center">
-            <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="avatar"
-              class="rounded-circle img-fluid" style="width: 150px;">
-            <h5 class="my-3" th:text="${user.name}"></h5>
+    <form method="POST" th:object="${profile}">
+      <div class="row">
+        <div class="col-lg-4">
+          <div class="card mb-4">
+            <div class="card-body text-center">
+              <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="avatar"
+                   class="rounded-circle img-fluid" style="width: 150px;">
+              <h5 class="my-3" th:text="${profile.name}"></h5>
             </div>
           </div>
         </div>
@@ -26,10 +27,14 @@
             <div class="row">
               <div class="col-sm-3">
                 <p class="mb-0">Tên đầy đủ</p>
+
               </div>
               <div class="col-sm-9">
-                <input id="name" type="text" th:value="${user.name}">
+                <input id="name" type="text" th:field="*{name}" name="name">
               </div>
+              <span class="validationError"
+                    th:if="${#fields.hasErrors('name')}"
+                    th:errors="*{name}">CC Num Error</span>
             </div>
             <hr>
             <div class="row">
@@ -37,7 +42,7 @@
                 <p class="mb-0">Email</p>
               </div>
               <div class="col-sm-9">
-                <input id = "email" type="email" th:value="${user.email}">
+                <input id = "email" type="email" th:field="*{email}" name="email">
               </div>
             </div>
             <hr>
@@ -46,7 +51,7 @@
                 <p class="mb-0">Số điện thoại</p>
               </div>
               <div class="col-sm-9">
-                <input id = "phoneNumber" type="text" th:value="${user.phoneNumber}">
+                <input id = "phoneNumber" type="text" th:field="*{phoneNumber}" name="phoneNumber">
               </div>
             </div>
             <hr>
@@ -55,7 +60,7 @@
                 <p class="mb-0">Ngày sinh</p>
               </div>
               <div class="col-sm-9">
-                <input id = "dateOfBirth" type="text" th:value="${dateOfBirth}">
+                <input id = "dateOfBirth" type="date" th:field="*{dateOfBirth}" name="dateOfBirth">
               </div>
             </div>
             <hr>
@@ -64,13 +69,14 @@
                 <p class="mb-0">Địa chỉ</p>
               </div>
               <div class="col-sm-9">
-                <input id = "address" type="text" th:value="${user.address}">
+                <input id = "address" type="text" th:field="*{address}" name="address">
               </div>
             </div>
-             	<button type="button" onclick="capnhap()">Cập nhập</button>
+            <button type="submit" class="btn btn-primary">Cập nhập</button>
           </div>
         </div>
-    </div>
+      </div>
+    </form>
   </div>
  
 </section>
