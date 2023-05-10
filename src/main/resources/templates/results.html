@@ -28,7 +28,7 @@
             <th scope="row" th:text="${result.id}"></th>
             <td th:text="${result.student.name}"></td>
             <td th:text="${result.numberOfCorrectAnswers + '/' + numberOfQuestions}"></td>
-            <td th:text="${#numbers.formatDecimal(exam.points * result.numberOfCorrectAnswers / numberOfQuestions, 0, 2) + '/' + exam.points}"></td>
+            <td th:text="${#numbers.formatDecimal(exam.points * result.numberOfCorrectAnswers / numberOfQuestions, 0, 1) + '/' + #numbers.formatDecimal(exam.points, 0, 1)}"></td>
         </tr>
         </tbody>
     </table>
