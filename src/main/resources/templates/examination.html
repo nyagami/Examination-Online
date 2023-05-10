@@ -24,7 +24,8 @@
                 Thêm câu hỏi
             </button>
             <!-- Modal -->
-            <div class="modal" id="questionModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="questionModalLabel" aria-hidden="true">
+            <div class="modal overflow-auto" id="questionModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                 aria-labelledby="questionModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -32,7 +33,7 @@
                         </div>
                         <div class="modal-body">
                             <div>
-                                <span class="text-danger d-none">Có lỗi</span>
+                                <span class="text-danger d-none">Có lỗi, hãy đảm bảo bạn đã thêm đề bài</span>
                                 <h4>Câu hỏi</h4>
                                 <textarea id="q-des" class="form-control"></textarea>
                             </div>
@@ -65,7 +66,8 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
-                                    onclick="$('#questionModal').hide()">Huỷ</button>
+                                    onclick="$('#questionModal').hide()">Huỷ
+                            </button>
                             <button type="button" class="btn btn-primary" onclick="postQuestion()">Thêm</button>
                         </div>
                     </div>
@@ -86,7 +88,8 @@
                     /*<![CDATA[*/
                     var examination = [[${exam}]];
                     /*]]>*/
-                </script>
+
+            </script>
             <script type="text/javascript">
                     function postQuestion(){
                         description = $('#q-des').val();
@@ -108,37 +111,51 @@
                             body: JSON.stringify(question),
                         }).then(res => {
                             if(res.ok){
-                                $('#questionModal').hide();
-                                $('#questionModal .text-danger').addClass('d-none');
+                                window.location.href = window.location.href;
                             }else{
                                 $('#questionModal .text-danger').removeClass('d-none');
                             }
                         });
                     }
-                </script>
+
+            </script>
         </div>
         <div th:case="'STUDENT'">
-            <div th:switch="${remain == exam.totalTime}">
-                <div th:case="true">
-                    <a th:href="@{'/examination/' + ${exam.id}} + '/process'">
-                        <button type="button" class="btn btn-primary">Bắt đầu</button>
-                    </a>
+            <div th:switch="${status}">
+                <div th:case="'COMING'">
+                    <h3>Bài kiểm tra chưa bắt đầu</h3>
                 </div>
-                <div th:case="false">
-                    <div th:switch="${remain < 0}">
+                <div th:case="'DURING'">
+                    <div th:switch="${remain == exam.totalTime}">
                         <div th:case="true">
-                            Bài kiểm tra dđã kết thúc, bạn có thể xem kết quả ở đây
-                            <a th:href="@{'/examination/' + ${exam.id}} + '/results'">
-                                <button type="button" class="btn btn-primary">Kết quả</button>
+                            <a th:href="@{'/examination/' + ${exam.id}} + '/process'">
+                                <button type="button" class="btn btn-primary">Bắt đầu</button>
                             </a>
                         </div>
                         <div th:case="false">
-                            Tiếp tục <br>
-                            <a th:href="@{'/examination/' + ${exam.id}} + '/process'">
-                                <button type="button" class="btn btn-primary" th:text="${'còn lại ' + remain / 60 + ' phút'}"></button>
-                            </a>
+                            <div th:switch="${remain <= 0}">
+                                <div th:case="true">
+                                    <h3>Bạn không thể làm bài được nữa, kết quả của bài kiểm tra ở đây</h3>
+                                    <a th:href="@{'/examination/' + ${exam.id}} + '/results'">
+                                        <button type="button" class="btn btn-primary">Kết quả</button>
+                                    </a>
+                                </div>
+                                <div th:case="false">
+                                    Tiếp tục làm bài <br>
+                                    <a th:href="@{'/examination/' + ${exam.id}} + '/process'">
+                                        <button type="button" class="btn btn-primary"
+                                                th:text="${'còn lại ' + remain / 60 + ' phút'}"></button>
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                     </div>
+                </div>
+                <div th:case="'ENDED'">
+                    <h3>Bài kiểm tra đã kết thúc, bạn có thể xem kết quả ở đây</h3>
+                    <a th:href="@{'/examination/' + ${exam.id}} + '/results'">
+                        <button type="button" class="btn btn-primary">Kết quả</button>
+                    </a>
                 </div>
             </div>
         </div>
@@ -188,14 +205,14 @@
             else alert("Có lỗi");
         });
     }
-    function renderQuestion(ele, id, role, des, answer, correct){
+    function renderQuestion(ele, id, no, role, des, answer, correct){
         answers = answer.split('#~~~#');
         if(role==='TEACHER'){
             html = `
             <div class="card" id="q-id-${id}">
               <div>
                <span class="text-danger d-none">Có lỗi</span>
-                <h4>Câu hỏi</h4>
+                <h4>Câu hỏi số ${no}</h4>
                 <textarea class="q-des form-control">${des ? des : ""}</textarea>
               </div>
               <ul class="text-left list-group">
@@ -230,17 +247,18 @@
         }
     }
     function renderQuestions(){
-        $('.question').each(function(){
+        $('.question').each(function(index){
             q = $(this);
             role = q.attr('data-role');
             des = q.attr('data-description');
             answer = q.attr('data-answer');
             correct = q.attr('data-correct');
             id = q.attr('data-id');
-            renderQuestion(q, id, role, des, answer, correct);
+            renderQuestion(q, id, index+1, role, des, answer, correct);
         });
     }
     renderQuestions();
+
 
 </script>
 </html>
