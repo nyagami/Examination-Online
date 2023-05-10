@@ -137,7 +137,10 @@ tbody{
     color: white;
     border: 2px solid transparent;
 }
-
+.add{
+    width: 80%;
+    margin: 0 auto;
+}
 .button1:hover {
     background-color: white;
     color: #4CAF50;
