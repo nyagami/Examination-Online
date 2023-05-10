@@ -118,17 +118,27 @@
                 </script>
         </div>
         <div th:case="'STUDENT'">
-            <div th:switch="${remain < exam.totalTime}">
+            <div th:switch="${remain == exam.totalTime}">
                 <div th:case="true">
                     <a th:href="@{'/examination/' + ${exam.id}} + '/process'">
                         <button type="button" class="btn btn-primary">Bắt đầu</button>
                     </a>
                 </div>
                 <div th:case="false">
-                    Tiếp tục <br>
-                    <a th:href="@{'/examination/' + ${exam.id}} + '/process'">
-                        <button type="button" class="btn btn-primary" th:text="${'còn lại ' + remain / 60 + ' phút'}"></button>
-                    </a>
+                    <div th:switch="${remain < 0}">
+                        <div th:case="true">
+                            Bài kiểm tra dđã kết thúc, bạn có thể xem kết quả ở đây
+                            <a th:href="@{'/examination/' + ${exam.id}} + '/results'">
+                                <button type="button" class="btn btn-primary">Kết quả</button>
+                            </a>
+                        </div>
+                        <div th:case="false">
+                            Tiếp tục <br>
+                            <a th:href="@{'/examination/' + ${exam.id}} + '/process'">
+                                <button type="button" class="btn btn-primary" th:text="${'còn lại ' + remain / 60 + ' phút'}"></button>
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

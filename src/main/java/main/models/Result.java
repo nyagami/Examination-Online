@@ -25,8 +25,8 @@ public class Result {
     @NotNull
     private Examination examination;
     private Date startTime;
-    private Boolean done;
     private Integer numberOfCorrectAnswers = 0;
+    private Boolean done = false;
     @PrePersist
     void startTime(){
         this.startTime = new Date();
