@@ -1,0 +1,74 @@
+body{
+    margin: 0;
+    padding: 0;
+}
+.header{
+    width: 95%;
+    height: 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.home_btn{
+    width: 100px;
+    height: 25px;
+    margin-left: 50px;
+}
+.wrap{
+    width: 100%;
+    height: 50px;
+    background-color: red;
+}
+h1 {
+    text-align: center;
+}
+
+h3 {
+    margin: 0;
+}
+input{
+    font-size: 20px;
+    margin: 0;
+}
+.add {
+    height: 29px;
+    margin: 0;
+}
+.table{
+    text-align: center;
+    margin-left: 20%;
+    margin-top: 20px;
+    height: 100%;
+}
+table{
+    border: 1px solid black;
+    width: 80%;
+}
+th {
+    position: sticky;
+    top:0;
+    border: 1px solid black;
+    background-color: #0080c7;
+}
+td{
+    border: 1px solid black;
+    text-align: center;
+}
+.maMoi{
+    text-align: center;
+}
+a {
+	text-decoration: none;
+	color: black;
+}
+.btn-out{
+	padding: 8px 30px;	
+	background-color: red;
+}
+.btn-add{
+	padding: 5px 30px;
+	background-color: #0080c7;
+}
+h3 {
+	margin-right: 5.5%;
+}
