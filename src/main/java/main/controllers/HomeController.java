@@ -31,13 +31,9 @@ public class HomeController {
     @Autowired
     private StudentRepository studentRepository;
 
-    @GetMapping("/home")
-    public String home(Model model){
-        List<Course> courses = courseRepository.findAll(Sort.by("id"));
-        if(courses!=null) {
-            model.addAttribute("courses",courses);
-        }
-        return "home";
+    @GetMapping("/")
+    public String home(){
+        return "redirect:/login";
     }
 
     @GetMapping("/student/home")
