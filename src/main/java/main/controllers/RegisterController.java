@@ -32,12 +32,7 @@ public class RegisterController {
 	@GetMapping("/register")
 	public String register(@RequestParam(value = "error",required = false) String error, Model model, Authentication authentication){
 		if(authentication!=null){
-			User user = userRepository.findByUsername(authentication.getName());
-			if(user.getRole().equals("STUDENT"))
-				return "redirect:/student/home";
-			else{
-				return "redirect:/teacher/home";
-			}
+			return "redirect:/";
 		}
 		if(error!=null) {
 			if(error.equals("password"))
