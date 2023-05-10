@@ -9,6 +9,11 @@
 <body>
 <section style="background-color: #eee;">
   <div class="container py-5">
+    <a th:href="@{/}">
+      <button class="btn btn-primary">
+        Home
+      </button>
+    </a>
     <form method="POST" th:object="${profile}">
       <div class="row">
         <div class="col-lg-4">

@@ -8,6 +8,21 @@
 </head>
 <body>
 <header class="text-center">
+    <a th:href="@{/}">
+        <button class="btn btn-primary">
+            Trang chủ
+        </button>
+    </a>
+    <a th:href="@{/profile}">
+        <button class="btn btn-primary">
+            Hồ sơ
+        </button>
+    </a>
+    <a th:href="@{'/examination/' + ${exam.id} + '/results'}">
+        <button class="btn btn-primary">
+            Kết quả
+        </button>
+    </a>
     <h1 th:text="${'Bài kiểm tra: ' + exam.title}"></h1>
     <h4 th:text="${'Thời gian diễn ra: ' + startDate + ' đến ' + endDate}"></h4>
     <h5 th:text="${'Thời gian làm bài: ' + exam.totalTime / 60 + ' phút'}"></h5>
@@ -257,7 +272,5 @@
         });
     }
     renderQuestions();
-
-
 </script>
 </html>

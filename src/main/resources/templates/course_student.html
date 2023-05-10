@@ -12,20 +12,16 @@
 </head>
 <body>
 <div class="wrap">
-  <div class="header">
-    <a th:href="@{/student/home}">
-      <button class="home_btn">
-        Home
-      </button>
-    </a>
-
-    <div class="dropdown">
-      <button class="profile_btn">
-        Profile
-        <i class="fa-solid fa-caret-down"></i>
-      </button>
-    </div>
-
+  <a th:href="@{/}">
+    <button class="btn btn-primary">
+      Trang chủ
+    </button>
+  </a>
+  <a th:href="@{/profile}">
+    <button class="btn btn-primary">
+      Hồ sơ
+    </button>
+  </a>
   </div>
   <div>
     <div class="infoClass">
@@ -65,6 +61,7 @@
         <th>Ngày bắt đầu</th>
         <th>Ngày kết thúc</th>
         <th>Thời gian làm</th>
+        <th>Điểm số</th>
       </tr>
       </thead>
       <tbody>
@@ -75,6 +72,7 @@
         <td th:text="${exam.startDate.toString().split(' ')[0]}"></td>
         <td th:text="${exam.endDate.toString().split(' ')[0]}"></td>
         <td th:text="${exam.totalTime/60 + ' phút'}"></td>
+        <td th:text="${#numbers.formatDecimal(exam.points, 0, 1)}"></td>
       </tr>
       </tbody>
     </table>

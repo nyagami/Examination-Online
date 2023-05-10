@@ -14,17 +14,16 @@
 <body>
 <div class="wrap">
   <div class="header">
-    <button class="home_btn">
-      Home
-    </button>
-
-    <div class="dropdown">
-      <button class="profile_btn">
-        Profile
-        <i class="fa-solid fa-caret-down"></i>
+    <a th:href="@{/}">
+      <button class="btn btn-primary">
+        Trang chủ
       </button>
-    </div>
-
+    </a>
+    <a th:href="@{/profile}">
+      <button class="btn btn-primary">
+        Hồ sơ
+      </button>
+    </a>
   </div>
   <div>
     <div class="infoClass">
@@ -41,12 +40,14 @@
       <table class="w3-table-all list">
         <thead>
         <tr class="w3-blue">
+          <th>ID Sinh viên</th>
           <th>Họ và tên</th>
           <th>email</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="student: ${students}">
+          <td th:text="${student.id}"></td>
           <td th:text="${student.name}"></td>
           <td th:text="${student.email == null ? 'Không có' : student.email}"></td>
         </tr>
@@ -64,7 +65,7 @@
         <th>Ngày bắt đầu</th>
         <th>Ngày kết thúc</th>
         <th>Thời gian làm</th>
-        <th>Điểm</th>
+        <th>Điểm số</th>
       </tr>
       </thead>
       <tbody>
@@ -107,7 +108,7 @@
           <input class = "name__ex" type="text"><br>
           <label>Mô tả</label><br>
           <textarea id="data-description"></textarea>
-          <label>Hiện cho sinh viên xem</label>
+          <label>Hiện cho sinh viên</label>
           <input id="data-is-visible" type="checkbox"><br>
           <label>Ngày bắt đầu</label><br>
           <input class="start_date" type="Date"><br>

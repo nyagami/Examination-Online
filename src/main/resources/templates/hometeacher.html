@@ -8,8 +8,16 @@
 <body>
 <div class="wrap">
     <div class="header">
-        <button class="home_btn">Home</button>
-        <button class="profile_btn">Profile</button>
+        <a th:href="@{/logout}">
+            <button class="btn btn-primary">
+                Đăng xuất
+            </button>
+        </a>
+        <a th:href="@{/profile}">
+            <button class="btn btn-primary">
+                Hồ sơ
+            </button>
+        </a>
     </div>
     <div class="common">
         <h1>Chào mừng bạn đến với ứng dụng của chúng tôi. Chúng tôi xin chân thành cảm ơn khi bạn đã tin tưởng chúng tôi</h1>
