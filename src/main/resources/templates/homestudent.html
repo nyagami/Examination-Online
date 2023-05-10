@@ -2,9 +2,46 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Home Student</title>
+    <link rel="stylesheet" th:href="@{/css/homestudent.css}">
 </head>
 <body>
-
+<div class="wrap">
+    <div class="header">
+        <button class="home_btn">Home</button>
+        <button class="profile_btn">Profile</button>
+    </div>
+    <div class="common">
+        <h1>Xin chào tất cả các bạn đã đến với hệ thống kiểm tra Online , chúc các bạn thi tốt</h1>
+        <div class="listClass">
+            <div class="maMoi">
+                <h3>Nhập mã mời</h3>
+                <input type="text" id="code">
+                <button class="btn-add" onclick="joinCourse()" type="button">Tham gia</button>
+                <div class="table">
+                    <table>
+                        <thead>
+                        <th>STT</th>
+                        <th>Tên lớp</th>
+                        <th>Tên Giảng viên</th>
+                        <th>Hành động</th>
+                        </thead>
+                        <tbody>
+                            <div th:each="course, i:${courses}">
+                                <tr>
+                                    <td th:text="${i.index+1}"></td>                     
+                                    <td><a href="@{/student/course}" th:text="${course.name}"></a></td>                     
+                                    <td th:text="${course.teacher.name}"></td>  
+                                    <input type="hidden" id="courseId" th:value="${course.id}">                   
+                                    <td><button type="button" onclick="leaveCourse()" class="btn-out">Rời</button></td>                          
+                                </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script th:src="@{/js/homestudent.js}"></script>
 </body>
 </html>

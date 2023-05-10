@@ -29,7 +29,7 @@ public class RegisterController {
 	private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
 	@GetMapping("/register")
-	public String register(@RequestParam(value = "error",required = false) String error,HttpSession session,Model model){
+	public String register(@RequestParam(value = "error",required = false) String error,Model model){
 		if(error!=null) {
 			if(error.equals("password"))
 				model.addAttribute("error", "Xác nhận mật khẩu của bạn không đúng");
@@ -37,30 +37,35 @@ public class RegisterController {
 				model.addAttribute("error","Tài khoản của bạn đã tồn tại");
 			}
 		}
-		User  user = (User) session.getAttribute("user");
-		if(user==null) {
-			user = new User();
-		}
-		model.addAttribute("user", user);
+		model.addAttribute("user", new User());
 		return "registration";
 	}
-
 	@PostMapping("/process-register")
 	public String processRegister(@ModelAttribute("user") User user, @RequestParam("password_2") String password_2,
 								  @RequestParam("name") String name, HttpSession session, Errors errors) {
-		user.setPassword(passwordEncoder.encode(user.getPassword()));
-		userRepository.save(user);
-		if (user.getRole().equals("STUDENT")) {
-			Student student = new Student();
-			student.setName(name);
-			student.setUser(user);
-			studentRepository.save(student);
-		} else {
-			Teacher teacher = new Teacher();
-			teacher.setName(name);
-			teacher.setUser(user);
-			teacherRepository.save(teacher);
+		if(!user.getPassword().equals(password_2)) {
+			return "redirect:register?error=password";
+		}else {
+			User user1 = userRepository.findByUsername(user.getUsername());
+			if(user1!=null) {
+				return "redirect:register?error=username";
+			}else {
+				user.setPassword(passwordEncoder.encode(user.getPassword()));
+				userRepository.save(user);
+				if (user.getRole().equals("STUDENT")) {
+					Student student = new Student();
+					student.setName(name);
+					student.setUser(user);
+					studentRepository.save(student);
+				} else {
+					Teacher teacher = new Teacher();
+					teacher.setName(name);
+					teacher.setUser(user);
+					teacherRepository.save(teacher);
+				}
+				return "success_registration.html";
+			}
 		}
-		return "success_registration.html";
+
 	}
 }
