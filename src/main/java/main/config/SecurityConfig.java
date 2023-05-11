@@ -65,7 +65,7 @@ public class SecurityConfig{
 				.logoutSuccessUrl("/login?logout=success")
 				.and()
 				.exceptionHandling()
-				.accessDeniedPage("/403")
+				.accessDeniedPage("/error")
 				.and()
 				.csrf().disable()
 				.authenticationManager(manager)
