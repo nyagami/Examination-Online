@@ -54,7 +54,8 @@ public class ExaminationController {
             model.addAttribute("questions", questions);
         }else if(user.getRole().equals("STUDENT") && examination.getIsVisible()){
             Student student = studentRepository.findByUser(user);
-            if(!course.getStudentList().contains(student) || !examination.getIsVisible())
+            System.out.println(course.getStudentList().contains(student));
+            if(!course.getStudentList().contains(student))
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN);
             Result result = resultRepository.findByExaminationAndStudent(examination, student);
             Date now = new Date();
@@ -67,7 +68,7 @@ public class ExaminationController {
             String status = (now.after(examination.getStartDate()) && now.before(examination.getEndDate())) ? "DURING" :
                     (now.after(examination.getEndDate()) ? "ENDED" : "COMING");
             model.addAttribute("status", status);
-        }
+        } else throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         model.addAttribute("exam", examination);
         model.addAttribute("role", user.getRole());
         detailDate(examination, model);
@@ -77,10 +78,9 @@ public class ExaminationController {
     @GetMapping("/{id}/process")
     public String process(@PathVariable("id") Long id, Model model, Authentication authentication){
         User user = userRepository.findByUsername(authentication.getName());
-        if(user == null) throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         Examination examination = examinationRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         Student student = studentRepository.findByUser(user);
-        if(!examination.getCourse().getStudentList().contains(student))
+        if(!examination.getCourse().getStudentList().contains(student) || !examination.getIsVisible())
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
 
         Result result = resultRepository.findByExaminationAndStudent(examination, student);
@@ -148,11 +148,11 @@ public class ExaminationController {
             Teacher teacher = teacherRepository.findByUser(user);
             if(!course.getTeacher().equals(teacher))
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-        }else if(user.getRole().equals("STUDENT")){
+        }else if(user.getRole().equals("STUDENT") && examination.getIsVisible()){
             Student student = studentRepository.findByUser(user);
             if(!course.getStudentList().contains(student))
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-        }
+        }else throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         List<Question> questions = (List<Question>) questionRepository.findByExamination(examination);
         model.addAttribute("numberOfQuestions", questions.size());
         Iterable<Result> results = resultRepository.findByExaminationAndDone(examination, true);
