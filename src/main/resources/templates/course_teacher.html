@@ -66,6 +66,8 @@
         <th>Ngày kết thúc</th>
         <th>Thời gian làm</th>
         <th>Điểm số</th>
+        <th></th>
+        <th></th>
       </tr>
       </thead>
       <tbody>
@@ -102,6 +104,7 @@
     </div>
     <div class="formModal">
       <div  class="formGroup">
+        <button class="cancel" onclick="turnOff()">Thoát</button>
         <h1 style="text-align: center">Thông tin bài kiểm tra</h1>
         <div class="form">
           <label>Tiêu đề</label><br>
@@ -235,7 +238,9 @@
       })
     });
   }
-
+  turnOff = () => {
+    $(".formModal").attr("style", "display: none;");
+  }
 
 </script>
 </html>
