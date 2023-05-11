@@ -4,16 +4,26 @@
     <meta charset="UTF-8">
     <title>Profile</title>
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
-    <link rel="stylesheet" th:href="@{/css/profile.css}">
 </head>
 <body>
+  <nav class="navbar navbar-expand-lg navbar-light bg-primary">
+    <a class="navbar-brand text-white" th:href="@{/}">Trang chủ</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a th:href="@{/profile}" class="nav-link text-white">Hồ sơ</a>
+            </li>
+            <li class="nav-item">
+              <a th:href="@{/logout}" class="nav-link text-white">Đăng xuất</a>
+          </li>
+        </ul>
+    </div>
+</nav>
 <section style="background-color: #eee;">
   <div class="container py-5">
-    <a th:href="@{/}">
-      <button class="btn btn-primary">
-        Home
-      </button>
-    </a>
     <form method="POST" th:object="${profile}">
       <div class="row">
         <div class="col-lg-4">
@@ -29,17 +39,16 @@
       <div class="col-lg-8">
         <div class="card mb-4">
           <div class="card-body">
+            <div class="text-danger"
+                    th:if="${#fields.hasErrors('name')}"
+                    th:errors="*{name}"></div>
             <div class="row">
               <div class="col-sm-3">
                 <p class="mb-0">Tên đầy đủ</p>
-
               </div>
               <div class="col-sm-9">
-                <input id="name" type="text" th:field="*{name}" name="name">
+                <input id="name" class="form-control" type="text" th:field="*{name}" name="name">
               </div>
-              <span class="validationError"
-                    th:if="${#fields.hasErrors('name')}"
-                    th:errors="*{name}">CC Num Error</span>
             </div>
             <hr>
             <div class="row">
@@ -47,7 +56,7 @@
                 <p class="mb-0">Email</p>
               </div>
               <div class="col-sm-9">
-                <input id = "email" type="email" th:field="*{email}" name="email">
+                <input id="email" class="form-control" type="email" th:field="*{email}" name="email">
               </div>
             </div>
             <hr>
@@ -56,7 +65,7 @@
                 <p class="mb-0">Số điện thoại</p>
               </div>
               <div class="col-sm-9">
-                <input id = "phoneNumber" type="text" th:field="*{phoneNumber}" name="phoneNumber">
+                <input id="phoneNumber" class="form-control" type="text" th:field="*{phoneNumber}" name="phoneNumber">
               </div>
             </div>
             <hr>
@@ -65,7 +74,7 @@
                 <p class="mb-0">Ngày sinh</p>
               </div>
               <div class="col-sm-9">
-                <input id = "dateOfBirth" type="date" th:field="*{dateOfBirth}" name="dateOfBirth">
+                <input id="dateOfBirth" class="form-control" type="date" th:field="*{dateOfBirth}" name="dateOfBirth">
               </div>
             </div>
             <hr>
@@ -74,10 +83,11 @@
                 <p class="mb-0">Địa chỉ</p>
               </div>
               <div class="col-sm-9">
-                <input id = "address" type="text" th:field="*{address}" name="address">
+                <input id="address" class="form-control" type="text" th:field="*{address}" name="address">
               </div>
             </div>
-            <button type="submit" class="btn btn-primary">Cập nhập</button>
+            <div class="dropdown-divider"></div>
+            <button type="submit" class="btn btn-primary">Cập nhật</button>
           </div>
         </div>
       </div>
