@@ -107,7 +107,8 @@
             <!-- Question list -->
             <div class="mt-3">
                 <ul id="question-list" class="list-group d-flex justify-content-center">
-                    <li class="list-group-item question mt-5 pb-5 px-5 bg-light" th:each="question: ${questions}" th:data-description="${question.description}"
+                    <li class="list-group-item question mt-5 pb-5 px-5 bg-light" th:each="question: ${questions}"
+                        th:data-description="${question.description}"
                         th:data-answer="${question.answer}" th:data-correct="${question.correctAnswer}"
                         th:data-id="${question.id}"
                     >
@@ -233,7 +234,7 @@
                 <div class="input-group-prepend">
                     <span class="input-group-text bg-primary text-white" id="basic-addon4">Đáp án 4</span>
                 </div>
-                <input value="${answers[4]}" type="text" class="form-control q-ans">
+                <input value="${answers[3]}" type="text" class="form-control q-ans">
             </div>
         <div class="mt-1">
             <div class="input-group-prepend">
@@ -268,7 +269,7 @@
     renderQuestions();
     function addQuestion(){
         description = $('#q-des').val();
-        answers = $('.form-control.q-ans');
+        answers = $('#questionModal .form-control.q-ans');
         answer = [...answers.map((idx, answer) => answer.value)].join('#~~~#');
         correctAnswer = $('#q-correct').val();
         question = {
