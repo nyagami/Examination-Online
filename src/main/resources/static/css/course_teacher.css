@@ -4,6 +4,9 @@ body{
     font-family: 'Open Sans', sans-serif;
 
 }
+.header a:first-child{
+    padding-left: 50px;
+}
 .listClass{
     max-height: 500px;
     overflow-y: scroll;
@@ -15,6 +18,7 @@ body{
     justify-content: space-between;
     align-items: center;
 }
+
 .home_btn{
     width: 100px;
     height: 30px;
@@ -171,9 +175,9 @@ tbody{
 .formGroup{
     position: absolute;
     width: 450px;
-    height: 500px;
-    top: 50%;
-    padding: 0 15px;
+    height: fit-content;
+    top: 20%;
+    padding: 15px;
     left: 35%;
     border-radius: 8px;
     background-color: #2aaacf;
@@ -183,7 +187,13 @@ tbody{
     flex-direction: column;
     margin: 0 auto;
 }
-
+.cancel{
+    position: absolute;
+    right: -60px;
+}
 .btn_update {
     display: none;
+}
+.main{
+    position: relative;
 }

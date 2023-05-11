@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <script th:src="@{/js/jquery.min.js}"></script>
+    <title th:text="${exam.title}"></title>
+</head>
+<body>
+<header class="text-center">
+    <a th:href="@{/}">
+        <button class="btn btn-primary">
+            Trang chủ
+        </button>
+    </a>
+    <a th:href="@{/profile}">
+        <button class="btn btn-primary">
+            Hồ sơ
+        </button>
+    </a>
+    <a th:href="@{'/examination/' + ${exam.id} + '/results'}">
+        <button class="btn btn-primary">
+            Kết quả
+        </button>
+    </a>
+    <h1 th:text="${'Bài kiểm tra: ' + exam.title}"></h1>
+    <h4 th:text="${'Thời gian diễn ra: ' + startDate + ' đến ' + endDate}"></h4>
+    <h5 th:text="${'Thời gian làm bài: ' + exam.totalTime / 60 + ' phút'}"></h5>
+    <p th:text="${exam.description}"></p>
+</header>
+
+<!-- content -->
+
+<div class="container text-center">
+    <div th:switch="${role}">
+        <div th:case="'TEACHER'">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-target="#questionModal"
+                    onclick="$('#questionModal').show()">
+                Thêm câu hỏi
+            </button>
+            <!-- Modal -->
+            <div class="modal overflow-auto" id="questionModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                 aria-labelledby="questionModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="questionModalLabel">Thêm câu hỏi</h1>
+                        </div>
+                        <div class="modal-body">
+                            <div>
+                                <span class="text-danger d-none">Có lỗi, hãy đảm bảo bạn đã thêm đề bài</span>
+                                <h4>Câu hỏi</h4>
+                                <textarea id="q-des" class="form-control"></textarea>
+                            </div>
+                            <div class="mt-2">
+                                <h5>Các đáp án </h5>
+                                <ul class="text-left">
+                                    <li>
+                                        Đáp án 1: <input class="form-control q-ans">
+                                    </li>
+                                    <li>
+                                        Đáp án 2: <input class="form-control q-ans">
+                                    </li>
+                                    <li>
+                                        Đáp án 3: <input class="form-control q-ans">
+                                    </li>
+                                    <li>
+                                        Đáp án 4: <input class="form-control q-ans">
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="mt-1">
+                                <h5>Đáp án đúng</h5>
+                                <select id="q-correct">
+                                    <option>1</option>
+                                    <option>2</option>
+                                    <option>3</option>
+                                    <option>4</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                                    onclick="$('#questionModal').hide()">Huỷ
+                            </button>
+                            <button type="button" class="btn btn-primary" onclick="postQuestion()">Thêm</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question list -->
+            <div class="mt-3">
+                <ul th:each="question: ${questions}" class="list-group">
+                    <li class="list-group-item question mt-5 pb-5" th:data-description="${question.description}"
+                        th:data-answer="${question.answer}" th:data-correct="${question.correctAnswer}"
+                        th:data-role="${role}" th:data-id="${question.id}"
+                    >
+                    </li>
+                </ul>
+            </div>
+            <script th:inline="javascript">
+                    /*<![CDATA[*/
+                    var examination = [[${exam}]];
+                    /*]]>*/
+            </script>
+            <script type="text/javascript">
+                    function postQuestion(){
+                        description = $('#q-des').val();
+                        answers = $('.form-control.q-ans');
+                        answer = [...answers.map((idx, answer) => answer.value)].join('#~~~#');
+                        correctAnswer = $('#q-correct').val();
+                        question = {
+                            description,
+                            answer,
+                            correctAnswer,
+                            examination,
+                        }
+                        fetch("/api/question/add", {
+                            method: 'POST',
+                            headers: {
+                              'Accept': 'application/json',
+                              'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(question),
+                        }).then(res => {
+                            if(res.ok){
+                                window.location.href = window.location.href;
+                            }else{
+                                $('#questionModal .text-danger').removeClass('d-none');
+                            }
+                        });
+                    }
+
+            </script>
+        </div>
+        <div th:case="'STUDENT'">
+            <div th:switch="${status}">
+                <div th:case="'COMING'">
+                    <h3>Bài kiểm tra chưa bắt đầu</h3>
+                </div>
+                <div th:case="'DURING'">
+                    <div th:switch="${remain == exam.totalTime}">
+                        <div th:case="true">
+                            <a th:href="@{'/examination/' + ${exam.id}} + '/process'">
+                                <button type="button" class="btn btn-primary">Bắt đầu</button>
+                            </a>
+                        </div>
+                        <div th:case="false">
+                            <div th:switch="${remain <= 0}">
+                                <div th:case="true">
+                                    <h3>Bạn không thể làm bài được nữa, kết quả của bài kiểm tra ở đây</h3>
+                                    <a th:href="@{'/examination/' + ${exam.id}} + '/results'">
+                                        <button type="button" class="btn btn-primary">Kết quả</button>
+                                    </a>
+                                </div>
+                                <div th:case="false">
+                                    Tiếp tục làm bài <br>
+                                    <a th:href="@{'/examination/' + ${exam.id}} + '/process'">
+                                        <button type="button" class="btn btn-primary"
+                                                th:text="${'còn lại ' + remain / 60 + ' phút'}"></button>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div th:case="'ENDED'">
+                    <h3>Bài kiểm tra đã kết thúc, bạn có thể xem kết quả ở đây</h3>
+                    <a th:href="@{'/examination/' + ${exam.id}} + '/results'">
+                        <button type="button" class="btn btn-primary">Kết quả</button>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<form class="">
+
+</form>
+</body>
+<script type="text/javascript">
+    deleteQuestion = (id) => {
+        fetch(`/api/question/delete/${id}`, {
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+            },
+            method: 'DELETE',
+        }).then(res => {
+            if(res.ok) $(`[data-id="${id}"]`).hide();
+            else alert("Có lỗi");
+        });
+    }
+    updateQuestion = (id) => {
+         card = $(`#q-id-${id}`);
+         description = card.find('textarea').val();
+         answers = card.find('.q-ans');
+         answer = [...answers.map((idx, answer) => answer.value)].join('#~~~#');
+         correctAnswer = card.find('.q-correct').val();
+         question = {
+            id,
+            description,
+            answer,
+            correctAnswer,
+            examination,
+        }
+        fetch(`/api/question/update/${id}`, {
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+            },
+            method: 'PUT',
+            body: JSON.stringify(question),
+        }).then(res => {
+            if(res.ok){
+                alert("Thay đổi thành công");
+            }
+            else alert("Có lỗi");
+        });
+    }
+    function renderQuestion(ele, id, no, role, des, answer, correct){
+        answers = answer.split('#~~~#');
+        if(role==='TEACHER'){
+            html = `
+            <div class="card" id="q-id-${id}">
+              <div>
+               <span class="text-danger d-none">Có lỗi</span>
+                <h4>Câu hỏi số ${no}</h4>
+                <textarea class="q-des form-control">${des ? des : ""}</textarea>
+              </div>
+              <ul class="text-left list-group">
+                <li class="list-group-item">
+                    Đáp án 1: <input class="form-control q-ans" value="${answers[0]}">
+                </li>
+                <li class="list-group-item">
+                    Đáp án 2: <input class="form-control q-ans" value="${answers[1]}">
+                </li>
+                <li class="list-group-item">
+                    Đáp án 3: <input class="form-control q-ans" value="${answers[2]}">
+                </li>
+                <li class="list-group-item">
+                    Đáp án 4: <input class="form-control q-ans" value="${answers[3]}">
+                </li>
+            </ul>
+            <h5>Đáp án đúng</h5>
+            <select class="q-correct" value="${correct}">
+                <option ${correct == 1 ? 'selected' : ''}>1</option>
+                <option ${correct == 2 ? 'selected' : ''}>2</option>
+                <option ${correct == 3 ? 'selected' : ''}>3</option>
+                <option ${correct == 4 ? 'selected' : ''}>4</option>
+            </select>
+
+            <button type="button" class="mt-3 btn btn-primary" onclick="updateQuestion(${id})">Lưu</button>
+            <button type="button" class="btn btn-danger" onclick="deleteQuestion(${id})">Xoá</button>
+
+            </div>
+            `;
+            ele.html(html);
+        }else if(role==='STUDENT'){
+        }
+    }
+    function renderQuestions(){
+        $('.question').each(function(index){
+            q = $(this);
+            role = q.attr('data-role');
+            des = q.attr('data-description');
+            answer = q.attr('data-answer');
+            correct = q.attr('data-correct');
+            id = q.attr('data-id');
+            renderQuestion(q, id, index+1, role, des, answer, correct);
+        });
+    }
+    renderQuestions();
+</script>
+</html>

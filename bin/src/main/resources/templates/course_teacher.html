@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Course</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" th:href="@{/css/course_teacher.css}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
+  <script th:src="@{/js/jquery.min.js}"></script>
+</head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <a th:href="@{/}">
+      <button class="btn btn-primary">
+        Trang chủ
+      </button>
+    </a>
+    <a th:href="@{/profile}">
+      <button class="btn btn-primary">
+        Hồ sơ
+      </button>
+    </a>
+  </div>
+  <div>
+    <div class="infoClass">
+      <div>
+        <h1>Tên lớp : </h1>
+        <span th:text="${course.name}"></span>
+      </div>
+      <div>
+        <h3>Tên Giảng viên :</h3>
+        <span th:text="${teacher.name}"></span>
+      </div>
+    </div>
+    <div class="listClass">
+      <table class="w3-table-all list">
+        <thead>
+        <tr class="w3-blue">
+          <th>ID Sinh viên</th>
+          <th>Họ và tên</th>
+          <th>email</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="student: ${students}">
+          <td th:text="${student.id}"></td>
+          <td th:text="${student.name}"></td>
+          <td th:text="${student.email == null ? 'Không có' : student.email}"></td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <table class="w3-table-all exam">
+      <thead>
+
+      <tr class="w3-blue">
+        <td>ID</td>
+        <th>Bài kiểm tra</th>
+        <th>Hiện cho sinh viên</th>
+        <th>Ngày bắt đầu</th>
+        <th>Ngày kết thúc</th>
+        <th>Thời gian làm</th>
+        <th>Điểm số</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="exam: ${exams}">
+        <td th:text="${exam.id}"></td>
+        <td>
+          <a th:href="@{'/examination/' + ${exam.id}}" th:text="${exam.title}"></a>
+        </td>
+        <td th:text="${exam.isVisible ? 'Có' : 'Không'}"></td>
+        <td th:text="${exam.startDate.toString().split(' ')[0]}"></td>
+        <td th:text="${exam.endDate.toString().split(' ')[0]}"></td>
+        <td th:text="${exam.totalTime/60 + ' phút'}"></td>
+        <td th:text="${#numbers.formatDecimal(exam.points, 0, 1)}"></td>
+        <td>
+          <button class="button button1"
+                  th:data-id = "${exam.id}"
+                  th:description="${exam.description}"
+                  th:title = "${exam.title}"
+                  th:is-visible="${exam.isVisible ? 1 : 0}"
+                  th:start-date = "${exam.startDate}"
+                  th:end-date = "${exam.endDate}"
+                  th:total-time = "${exam.totalTime}"
+                  th:points = "${exam.points}"
+                  onclick = "updateExam(this)">
+            Sửa bài kiểm tra
+          </button>
+        </td>
+        <td><button class="button button2" th:data-id="${exam.id}" onclick="deleteExam(this)">Xoá bài kiểm tra</button></td>
+      </tr>
+      </tbody>
+    </table>
+    <div class="add">
+      <button class="button button1 btn-add__ex"  >Thêm bài kiểm tra</button>
+    </div>
+    <div class="formModal">
+      <div  class="formGroup">
+        <h1 style="text-align: center">Thông tin bài kiểm tra</h1>
+        <div class="form">
+          <label>Tiêu đề</label><br>
+          <input class = "name__ex" type="text"><br>
+          <label>Mô tả</label><br>
+          <textarea id="data-description"></textarea>
+          <label>Hiện cho sinh viên</label>
+          <input id="data-is-visible" type="checkbox"><br>
+          <label>Ngày bắt đầu</label><br>
+          <input class="start_date" type="Date"><br>
+          <label>Ngày kết thúc</label><br>
+          <input class="end_date" type="Date"><br>
+
+          <label>Thời gian làm (tính theo giây)</label><br>
+          <input class="total_time" type="number"><br>
+          <label>Điểm số</label><br>
+          <input id="data-points" type="number"><br>
+          <input class = "btn_submit" th:data-id = "${course.id}" onclick="createExam(this)" type="submit" value="Hoàn tất" style="width: 60% ; margin: 0 auto" >
+          <input class = "btn_update" type="submit" value="Cập nhật" style="width: 60% ; margin: 0 auto" >
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+</body>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var course = [[${course}]];
+    /*]]>*/
+</script>
+<script>
+  deleteExam = (ele) => {
+    btn = $(ele);
+    id = btn.attr('data-id');
+    fetch(`/api/examination/delete/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+    }).then(res => {
+      if(res.ok){
+        alert('Xoá thành công');
+        window.location.href=window.location.href
+      }else{
+        alert('Có lỗi');
+      }
+    });
+  }
+  $('.btn-add__ex').click(function(){
+    $(".formModal").attr("style", "display: block;");
+  })
+
+  getData = () => {
+     return {
+      title: $('.name__ex').val(),
+      isVisible: $('#data-is-visible').prop('checked'),
+      description: $('#data-description').val(),
+      startDate: $(".start_date").val(),
+      endDate: $(".end_date").val(),
+      totalTime: $(".total_time").val(),
+      points: $('#data-points').val(),
+      course
+    }
+  }
+
+  createExam = (e) => {
+    btn = $(e);
+    courseId = btn.attr("data-id");
+    data = getData();
+    fetch(`/api/examination/add/${courseId}`, {
+      method: "POST", // or 'PUT'
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data),
+    }).then(res => {
+      if (res.ok){
+        alert("Thêm bài kiểm tra thành công");
+        window.location.href=window.location.href
+      }else{
+        alert('Thất bại, vui lòng kiểm tra lại dữ liệu');
+      }
+    });
+
+  }
+
+
+  updateExam = (e) => {
+    $(".formModal").attr("style", "display: block;");
+    $(".btn_submit").attr("style", "display: none;");
+    $(".btn_update").attr("style", "display: block;");
+    btn = $(e);
+    id = btn.attr("data-id");
+    title = btn.attr("title");
+    isVisible = Number(btn.attr("is-visible"));
+    description = btn.attr("description");
+    startDate = btn.attr("start-date")
+    endDate = btn.attr("end-date")
+    totalTime = btn.attr("total-time");
+    points = Number(btn.attr("points"));
+    $(".name__ex").val(title);
+    $("#data-description").val(description);
+    $("#data-is-visible").prop('checked', isVisible);
+    $(".start_date").val(startDate.split(" ")[0]);
+    $(".end_date").val(endDate.split(" ")[0]);
+    $(".total_time").val(totalTime);
+    console.log(points);
+    $('#data-points').val(points);
+    console.log(getData());
+    $('.btn_update').click(function() {
+      data = getData();
+      data.id = id;
+      fetch(`/api/examination/update`, {
+        method: "PUT",
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data),
+      }).then(res => {
+        if (res.ok){
+          alert("Cập nhật bài kiểm tra thành công");
+          window.location.href=window.location.href
+        }else{
+          alert('Thất bại, vui lòng kiểm tra lại dữ liệu');
+        }
+      })
+    });
+  }
+
+
+</script>
+</html>

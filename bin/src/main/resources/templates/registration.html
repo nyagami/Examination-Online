@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Registration</title>
+    <link rel="stylesheet" th:href="@{/css/registration.css}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="wrap">
+    <div class="wrapForm">
+        <form th:action="@{/process-register}" method="POST" th:object="${user}" class="formContainer">
+            <h3 class="heading">Đăng Ký</h3>
+            <div th:if="${error}"><span th:text="${error}" style="color: red;"></span></div>
+            <label id="name">Họ và tên</label>
+            <input type="text" name="name" required/>
+
+            <label id="username">Tài khoản</label>
+            <input type="text" th:field="*{username}" required/>
+
+            <span class="validationError" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Mật khẩu</span>
+
+            <label id="password">Nhập mật khẩu</label>
+            <input type="password" th:field="*{password}" required/>
+
+            <label id="password_2">Nhập lại mật khẩu</label>
+            <input type="password" name="password_2" required/>
+
+            <p>Bạn đang là : </p>
+            <div class="optionGroup">
+                <input type="radio" th:field="*{role}" value="TEACHER" required/> Giảng viên
+                <input type="radio" th:field="*{role}" value="STUDENT" required/> Sinh viên
+            </div>
+
+            <input type="submit" value="Đăng ký" class="inputSubmit">
+
+            <p>Bạn đã có tài khoản , hãy đăng nhập ngay </p>
+            <a th:href="@{/login}" >Đăng nhập ngay</a>
+        </form>
+    </div>
+</div>
+</body>
+</html>
