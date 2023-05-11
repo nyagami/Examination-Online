@@ -6,22 +6,23 @@
     <title th:text="${exam.title}"></title>
 </head>
 <body>
+<nav class="navbar navbar-expand-lg navbar-light bg-primary">
+    <a class="navbar-brand text-white" th:href="@{/}">Trang chủ</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a th:href="@{/profile}" class="nav-link text-white">Hồ sơ</a>
+            </li>
+            <li class="nav-item">
+                <a th:href="@{'/examination/' + ${exam.id} + '/results'}" class="nav-link text-white">Kết quả</a>
+            </li>
+        </ul>
+    </div>
+</nav>
 <header class="text-center">
-    <a th:href="@{/}">
-        <button class="btn btn-primary">
-            Trang chủ
-        </button>
-    </a>
-    <a th:href="@{/profile}">
-        <button class="btn btn-primary">
-            Hồ sơ
-        </button>
-    </a>
-    <a th:href="@{'/examination/' + ${exam.id} + '/results'}">
-        <button class="btn btn-primary">
-            Kết quả
-        </button>
-    </a>
     <h1 th:text="${'Bài kiểm tra: ' + exam.title}"></h1>
     <h4 th:text="${'Thời gian diễn ra: ' + startDate + ' đến ' + endDate}"></h4>
     <h5 th:text="${'Thời gian làm bài: ' + exam.totalTime / 60 + ' phút'}"></h5>
@@ -42,46 +43,62 @@
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="questionModalLabel">Thêm câu hỏi</h1>
+                            <h3 class="modal-title fs-5" id="questionModalLabel">Thêm câu hỏi</h3>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
                         <div class="modal-body">
-                            <div>
-                                <span class="text-danger d-none">Có lỗi, hãy đảm bảo bạn đã thêm đề bài</span>
-                                <h4>Câu hỏi</h4>
-                                <textarea id="q-des" class="form-control"></textarea>
+                            <span class="text-success d-none">Thêm thành công</span>
+                            <span class="text-danger d-none">Có lỗi, hãy đảm bảo bạn đã thêm đề bài</span>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">Đề bài câu hỏi</span>
+                                </div>
+                                <textarea id="q-des" class=" form-control" aria-label="With textarea"></textarea>
                             </div>
                             <div class="mt-2">
                                 <h5>Các đáp án </h5>
-                                <ul class="text-left">
-                                    <li>
-                                        Đáp án 1: <input class="form-control q-ans">
-                                    </li>
-                                    <li>
-                                        Đáp án 2: <input class="form-control q-ans">
-                                    </li>
-                                    <li>
-                                        Đáp án 3: <input class="form-control q-ans">
-                                    </li>
-                                    <li>
-                                        Đáp án 4: <input class="form-control q-ans">
-                                    </li>
-                                </ul>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="basic-addon1">Đáp án 1</span>
+                                    </div>
+                                    <input type="text" class="form-control q-ans" aria-describedby="basic-addon1">
+                                </div>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="basic-addon2">Đáp án 2</span>
+                                    </div>
+                                    <input type="text" class="form-control q-ans" aria-describedby="basic-addon2">
+                                </div>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="basic-addon3">Đáp án 3</span>
+                                    </div>
+                                    <input type="text" class="form-control q-ans" aria-describedby="basic-addon3">
+                                </div>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="basic-addon4">Đáp án 4</span>
+                                    </div>
+                                    <input type="text" class="form-control q-ans" aria-describedby="basic-addon4">
+                                </div>
                             </div>
+
                             <div class="mt-1">
-                                <h5>Đáp án đúng</h5>
-                                <select id="q-correct">
-                                    <option>1</option>
-                                    <option>2</option>
-                                    <option>3</option>
-                                    <option>4</option>
+                                <div class="input-group-prepend">
+                                    <label class="input-group-text" for="q-correct">Đáp án đúng</label>
+                                </div>
+                                <select class="custom-select" id="q-correct">
+                                    <option value="1" selected>1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
                                 </select>
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" onclick="postQuestion()">Thêm</button>
+                            <button type="button" class="btn btn-primary" onclick="addQuestion()">Thêm</button>
                         </div>
                     </div>
                 </div>
@@ -89,10 +106,10 @@
 
             <!-- Question list -->
             <div class="mt-3">
-                <ul th:each="question: ${questions}" class="list-group">
-                    <li class="list-group-item question mt-5 pb-5" th:data-description="${question.description}"
+                <ul id="question-list" class="list-group d-flex justify-content-center">
+                    <li class="list-group-item question mt-5 pb-5 px-5 bg-light" th:each="question: ${questions}" th:data-description="${question.description}"
                         th:data-answer="${question.answer}" th:data-correct="${question.correctAnswer}"
-                        th:data-role="${role}" th:data-id="${question.id}"
+                        th:data-id="${question.id}"
                     >
                     </li>
                 </ul>
@@ -101,35 +118,6 @@
                     /*<![CDATA[*/
                     var examination = [[${exam}]];
                     /*]]>*/
-            </script>
-            <script type="text/javascript">
-                    function postQuestion(){
-                        description = $('#q-des').val();
-                        answers = $('.form-control.q-ans');
-                        answer = [...answers.map((idx, answer) => answer.value)].join('#~~~#');
-                        correctAnswer = $('#q-correct').val();
-                        question = {
-                            description,
-                            answer,
-                            correctAnswer,
-                            examination,
-                        }
-                        fetch("/api/question/add", {
-                            method: 'POST',
-                            headers: {
-                              'Accept': 'application/json',
-                              'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify(question),
-                        }).then(res => {
-                            if(res.ok){
-                                window.location.href = window.location.href;
-                            }else{
-                                $('#questionModal .text-danger').removeClass('d-none');
-                            }
-                        });
-                    }
-
             </script>
         </div>
         <div th:case="'STUDENT'">
@@ -153,7 +141,7 @@
                                     </a>
                                 </div>
                                 <div th:case="false">
-                                    Tiếp tục làm bài <br>
+                                    <h3>Tiếp tục làm bài <h3>
                                     <a th:href="@{'/examination/' + ${exam.id}} + '/process'">
                                         <button type="button" class="btn btn-primary"
                                                 th:text="${'còn lại ' + remain / 60 + ' phút'}"></button>
@@ -180,18 +168,6 @@
 <script th:src="@{/js/jquery.min.js}"></script>
 <script th:src="@{/js/boostrap.min.js}"></script>
 <script type="text/javascript">
-    deleteQuestion = (id) => {
-        fetch(`/api/question/delete/${id}`, {
-            headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-            },
-            method: 'DELETE',
-        }).then(res => {
-            if(res.ok) $(`[data-id="${id}"]`).hide();
-            else alert("Có lỗi");
-        });
-    }
     updateQuestion = (id) => {
          card = $(`#q-id-${id}`);
          description = card.find('textarea').val();
@@ -214,63 +190,126 @@
             body: JSON.stringify(question),
         }).then(res => {
             if(res.ok){
-                alert("Thay đổi thành công");
+                card.find('.text-danger').addClass('d-none');
+                card.find('.text-success').removeClass('d-none');
             }
-            else alert("Có lỗi");
+            else{
+                card.find('.text-success').addClass('d-none');
+                card.find('.text-danger').removeClass('d-none');
+            }
         });
     }
-    function renderQuestion(ele, id, no, role, des, answer, correct){
+    function renderQuestion(ele, id, no, des, answer, correct){
         answers = answer.split('#~~~#');
-        if(role==='TEACHER'){
-            html = `
-            <div class="card" id="q-id-${id}">
-              <div>
-               <span class="text-danger d-none">Có lỗi</span>
-                <h4>Câu hỏi số ${no}</h4>
-                <textarea class="q-des form-control">${des ? des : ""}</textarea>
-              </div>
-              <ul class="text-left list-group">
-                <li class="list-group-item">
-                    Đáp án 1: <input class="form-control q-ans" value="${answers[0]}">
-                </li>
-                <li class="list-group-item">
-                    Đáp án 2: <input class="form-control q-ans" value="${answers[1]}">
-                </li>
-                <li class="list-group-item">
-                    Đáp án 3: <input class="form-control q-ans" value="${answers[2]}">
-                </li>
-                <li class="list-group-item">
-                    Đáp án 4: <input class="form-control q-ans" value="${answers[3]}">
-                </li>
-            </ul>
-            <h5>Đáp án đúng</h5>
-            <select class="q-correct" value="${correct}">
+        html = `
+        <div id="q-id-${id}">
+          <div>
+           <span class="text-danger d-none">Có lỗi, hãy đảm bảo bạn đã thêm đề bài</span>
+           <span class="text-success d-none">Sửa thành công</span>
+            <h4 class="text-primary">Câu hỏi số ${no}</h4>
+            <textarea class="q-des form-control">${des ? des : ""}</textarea>
+          </div>
+          <div class="mt-2">
+            <h5>Các đáp án </h5>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text bg-primary text-white" id="basic-addon1">Đáp án 1</span>
+                </div>
+                <input value="${answers[0]}" type="text" class="form-control q-ans"">
+            </div>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text bg-primary text-white" id="basic-addon2">Đáp án 2</span>
+                </div>
+                <input value="${answers[1]}" type="text" class="form-control q-ans">
+            </div>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text bg-primary text-white" id="basic-addon3">Đáp án 3</span>
+                </div>
+                <input value="${answers[2]}" type="text" class="form-control q-ans">
+            </div>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text bg-primary text-white" id="basic-addon4">Đáp án 4</span>
+                </div>
+                <input value="${answers[4]}" type="text" class="form-control q-ans">
+            </div>
+        <div class="mt-1">
+            <div class="input-group-prepend">
+                <label class="input-group-text" for="q-correct">Đáp án đúng</label>
+            </div>
+            <select class="custom-select q-correct">
                 <option ${correct == 1 ? 'selected' : ''}>1</option>
                 <option ${correct == 2 ? 'selected' : ''}>2</option>
                 <option ${correct == 3 ? 'selected' : ''}>3</option>
                 <option ${correct == 4 ? 'selected' : ''}>4</option>
             </select>
-
+        </div>
+        <div>
             <button type="button" class="mt-3 btn btn-primary" onclick="updateQuestion(${id})">Lưu</button>
-            <button type="button" class="btn btn-danger" onclick="deleteQuestion(${id})">Xoá</button>
-
-            </div>
-            `;
-            ele.html(html);
-        }else if(role==='STUDENT'){
-        }
+            <button type="button" class="mt-3 btn btn-danger" onclick="deleteQuestion(${id})">Xoá</button>
+        </div>
+        </div>
+        `;
+        ele.html(html);
     }
+
     function renderQuestions(){
         $('.question').each(function(index){
             q = $(this);
-            role = q.attr('data-role');
             des = q.attr('data-description');
             answer = q.attr('data-answer');
             correct = q.attr('data-correct');
             id = q.attr('data-id');
-            renderQuestion(q, id, index+1, role, des, answer, correct);
+            renderQuestion(q, id, index+1, des, answer, correct);
         });
     }
     renderQuestions();
+    function addQuestion(){
+        description = $('#q-des').val();
+        answers = $('.form-control.q-ans');
+        answer = [...answers.map((idx, answer) => answer.value)].join('#~~~#');
+        correctAnswer = $('#q-correct').val();
+        question = {
+            description,
+            answer,
+            correctAnswer,
+            examination,
+        }
+        fetch("/api/question/add", {
+            method: 'POST',
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(question),
+        }).then(res => {
+            if(res.ok){
+                list = $('#question-list');
+                no = list.children().length + 1;
+                list.append('<li class="list-group-item question mt-5 pb-5 px-5 bg-light"></li>');
+                res.json().then(q => renderQuestion(list.find('.list-group-item').last(), q.id, no, description, answer, correctAnswer));
+                $('#questionModal .text-danger').addClass('d-none');
+                $('#questionModal .text-success').removeClass('d-none');
+            }else{
+                $('#questionModal .text-success').addClass('d-none');
+                $('#questionModal .text-danger').removeClass('d-none');
+            }
+        });
+    }
+
+     deleteQuestion = (id) => {
+        fetch(`/api/question/delete/${id}`, {
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+            },
+            method: 'DELETE',
+        }).then(res => {
+            if(res.ok) $(`[data-id="${id}"]`).remove();
+            else alert("Có lỗi");
+        });
+    }
 </script>
 </html>

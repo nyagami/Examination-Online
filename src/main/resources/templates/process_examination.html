@@ -15,8 +15,8 @@
     </header>
 
     <div th:switch="${done}">
-        <div th:case="true">
-            Bài kiểm tra dđã kết thúc, bạn có thể xem kết quả ở đây
+        <div th:case="true" class="text-center">
+            <h3>Bài kiểm tra dđã kết thúc, bạn có thể xem kết quả ở đây</h3>
             <a th:href="@{'/examination/' + ${exam.id}} + '/results'">
                 <button type="button" class="btn btn-primary">Kết quả</button>
             </a>
@@ -29,12 +29,15 @@
                     ></span>
                 </button>
             </div>
-            <ul th:each="question: ${questions}" class="list-group">
-                <li class="list-group-item question mt-5 pb-5" th:data-description="${question.description}"
-                    th:data-answer="${question.answer}" th:data-id="${question.id}"
-                >
-                </li>
-            </ul>
+            <div class="mt-3">
+                <ul id="question-list" class="list-group d-flex justify-content-center px-5">
+                    <li class="list-group-item question mt-5 pb-5 px-5 bg-light" th:each="question: ${questions}"
+                        th:data-description="${question.description}"
+                        th:data-answer="${question.answer}" th:data-id="${question.id}"
+                    >
+                    </li>
+                </ul>
+            </div>
             <form class="text-center" method="post" th:oject="${questionWrapper}">
                 <div th:each="question, stat: ${questionWrapper.questions}">
                     <input hidden th:value="${question.id}" th:name="|questions[${stat.index}].id|">
@@ -50,9 +53,9 @@
     function renderQuestion(ele, id, no, des, answer){
         answers = answer.split('#~~~#');
         html = `
-        <div class="card">
+        <div class="p-1">
           <div>
-            <h4>Câu hỏi số ${no}</h4>
+            <h4 class="text-primary">Câu hỏi số ${no}</h4>
             <p>${des}</p>
           </div>
           <ul class="text-left list-group" data-id="${id}">
