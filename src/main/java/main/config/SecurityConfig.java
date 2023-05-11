@@ -25,18 +25,14 @@ import java.util.Set;
 @EnableWebSecurity
 @Configuration
 public class SecurityConfig{
-
 	@Bean
 	public PasswordEncoder passwordEncoder(){
 		return new BCryptPasswordEncoder();
 	}
-
 	@Bean
 	public UserDetailsService userDetailsService(){
 		return new CustomUserDetailsService();
 	}
-
-
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
 		AuthenticationManagerBuilder builder = http.getSharedObject(AuthenticationManagerBuilder.class);
@@ -57,6 +53,8 @@ public class SecurityConfig{
 				.loginProcessingUrl("/sign-in")
 				.successHandler(authenticationSuccessHandler())
 				.failureUrl("/login?error=true")
+				.and()
+				.rememberMe().rememberMeParameter("remember-me")
 				.and()
 				.logout()
 				.deleteCookies("JSESSIONID")
