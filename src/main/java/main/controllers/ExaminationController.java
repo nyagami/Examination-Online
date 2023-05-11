@@ -54,7 +54,6 @@ public class ExaminationController {
             model.addAttribute("questions", questions);
         }else if(user.getRole().equals("STUDENT") && examination.getIsVisible()){
             Student student = studentRepository.findByUser(user);
-            System.out.println(course.getStudentList().contains(student));
             if(!course.getStudentList().contains(student))
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN);
             Result result = resultRepository.findByExaminationAndStudent(examination, student);

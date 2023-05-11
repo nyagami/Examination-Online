@@ -3,21 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
-    <script th:src="@{/js/jquery.min.js}"></script>
     <title th:text="${'Kết quả bài kiểm tra: ' + exam.title}"></title>
 </head>
 <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-primary">
+        <a class="navbar-brand text-white" th:href="@{/}">Trang chủ</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a th:href="@{/profile}" class="nav-link text-white">Hồ sơ</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
     <header class="text-center">
-        <a th:href="@{/}">
-            <button class="btn btn-primary">
-                Trang chủ
-            </button>
-        </a>
-        <a th:href="@{/profile}">
-            <button class="btn btn-primary">
-                Hồ sơ
-            </button>
-        </a>
         <h1 th:text="${'Kết quả bài kiểm tra: ' + exam.title}"></h1>
         <h4 th:text="${'Thời gian diễn ra: ' + startDate + ' đến ' + endDate}"></h4>
         <h5 th:text="${'Thời gian làm bài: ' + exam.totalTime / 60 + ' phút'}"></h5>
@@ -43,4 +45,6 @@
         </tbody>
     </table>
 </body>
+<script th:src="@{/js/jquery.min.js}"></script>
+<script th:src="@{/js/boostrap.min.js}"></script>
 </html>
