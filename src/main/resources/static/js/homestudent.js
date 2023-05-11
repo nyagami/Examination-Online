@@ -22,8 +22,8 @@ function joinCourse(){
             alert(error.message);
         });
 }
-function leaveCourse(){
-    var id = document.getElementById("courseId").value;
+function leaveCourse(ele){
+    var id = ele.getAttribute("data-id");
     course = {
         id,
     }

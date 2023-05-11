@@ -19,6 +19,6 @@ public class Error implements ErrorController {
             }
             return "404";
         }
-        return "404.html";
+        return "403";
     }
 }
