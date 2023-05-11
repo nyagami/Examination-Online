@@ -16,8 +16,10 @@ public class Error implements ErrorController {
             int code = Integer.parseInt(status.toString());
             if (code == HttpStatus.INTERNAL_SERVER_ERROR.value()) {
                 return "500";
+            }else if(code == HttpStatus.NOT_FOUND.value()){
+                return "404";
             }
-            return "404";
+            return "403";
         }
         return "403";
     }
