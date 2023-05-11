@@ -32,6 +32,7 @@
               <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="avatar"
                    class="rounded-circle img-fluid" style="width: 150px;">
               <h5 class="my-3" th:text="${profile.name}"></h5>
+              <span th:text="${'@' + profile.user.username}" class="text-primary"></span>
             </div>
           </div>
         </div>
@@ -92,6 +93,9 @@
         </div>
       </div>
     </form>
+    <a th:href="@{/profile/reset-password}">
+      <button type="submit" class="btn btn-primary">Đổi mật khẩu</button>
+    </a>
   </div>
  
 </section>
