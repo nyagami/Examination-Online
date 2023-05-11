@@ -11,13 +11,18 @@ import main.models.Teacher;
 import main.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.security.Principal;
 import java.text.SimpleDateFormat;
@@ -100,5 +105,34 @@ public class UserController {
 			model.addAttribute("profile", studentRepository.save(profile.toStudent(student)));
 		}
 		return "profile";
+	}
+	
+	@GetMapping("/reset-password")
+	public String reset(Authentication authentication, Model model){
+		User user = userRepository.findByUsername(authentication.getName());
+		if(user == null) throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+		return "reset_password";
+	}
+
+	@PostMapping("/reset-password")
+	public String postreset(Authentication authentication, Model model, @RequestParam String oldPassword,
+							@RequestParam String newPassword, @RequestParam String newPassword2){
+		User user = userRepository.findByUsername(authentication.getName());
+		PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+		if(!passwordEncoder.matches(oldPassword, user.getPassword())){
+			model.addAttribute("wrongPassword", true);
+		}
+		else if(!newPassword.equals(newPassword2)){
+			model.addAttribute("notMatched", true);
+		}
+		else if(newPassword.length() < 6){
+			model.addAttribute("weak", true);
+		}
+		else{
+			model.addAttribute("success", true);
+			user.setPassword(passwordEncoder.encode(newPassword));
+			userRepository.save(user);
+		}
+		return "reset_password";
 	}
 }
