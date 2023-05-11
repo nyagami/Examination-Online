@@ -170,7 +170,7 @@ tbody{
     right: 0;
     background-color: #cccccc;
     opacity: 0.9;
-    display: none;
+    display: block;
 }
 .formGroup{
     position: absolute;
@@ -193,6 +193,9 @@ tbody{
 }
 .btn_update {
     display: none;
+}
+.main{
+    position: relative;
 }
 .main{
     position: relative;
